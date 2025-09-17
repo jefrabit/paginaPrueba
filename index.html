@@ -1,102 +1,467 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página de Prueba</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
-      color: white;
-      text-align: center;
-    }
-
-    header {
-      padding: 20px;
-      background: rgba(0,0,0,0.3);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2.5rem;
-    }
-
-    button {
-      margin: 15px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 1rem;
-      background: white;
-      color: #2575fc;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #2575fc;
-      color: white;
-    }
-
-    .caja {
-      margin: 30px auto;
-      width: 200px;
-      height: 200px;
-      background: white;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #2575fc;
-      font-weight: bold;
-      font-size: 1.2rem;
-      transition: transform 0.5s ease-in-out;
-    }
-
-    footer {
-      margin-top: 50px;
-      padding: 15px;
-      background: rgba(0,0,0,0.3);
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Utilidades – Página Funcional</title>
+<meta name="description" content="Página estática con utilidades: tareas, pomodoro, gastos, notas, conversor y tema oscuro."/>
+<style>
+  :root{
+    --bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--accent:#7c3aed;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;--ring:rgba(124,58,237,.35)
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{
+    margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+    background:var(--bg);color:var(--text);display:flex;flex-direction:column;gap:20px
+  }
+  header{
+    padding:18px 16px;background:linear-gradient(135deg,#1e293b 0%,#0b1020 100%);
+    position:sticky;top:0;z-index:10;border-bottom:1px solid #1f2937
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+  h1{margin:0;font-weight:800;letter-spacing:.3px;font-size:clamp(20px,4vw,28px)}
+  .sub{color:var(--muted);font-size:.95rem;margin-top:6px}
+  nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  nav button{
+    background:#0b1222;border:1px solid #1f2937;color:var(--text);padding:8px 12px;border-radius:12px;cursor:pointer
+  }
+  nav button.active{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .card{
+    background:var(--card);border:1px solid #1f2937;border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.25)
+  }
+  .card h2{margin:0 0 10px 0;font-size:1.05rem}
+  input[type="text"], input[type="number"], textarea, select{
+    width:100%;background:#0b1222;border:1px solid #243041;color:var(--text);
+    padding:10px;border-radius:10px;outline:none
+  }
+  input:focus, textarea:focus, select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+  .row{display:flex;gap:8px;align-items:center}
+  .row.wrap{flex-wrap:wrap}
+  .btn{
+    background:#1f2937;border:1px solid #334155;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer
+  }
+  .btn.primary{background:var(--accent);border-color:transparent}
+  .btn.ghost{background:transparent;border:1px dashed #334155}
+  .btn.ok{background:var(--ok)}
+  .btn.warn{background:var(--warn)}
+  .btn.danger{background:var(--danger)}
+  .muted{color:var(--muted);font-size:.9rem}
+  .pill{display:inline-flex;align-items:center;gap:6px;background:#0b1222;border:1px solid #243041;color:var(--text);padding:6px 10px;border-radius:999px}
+  .list{display:flex;flex-direction:column;gap:8px;margin-top:8px;max-height:260px;overflow:auto;padding-right:4px}
+  .todo{display:flex;align-items:center;gap:10px;background:#0b1222;border:1px solid #222c3d;padding:8px;border-radius:12px}
+  .todo.done{opacity:.6;text-decoration:line-through}
+  .right{margin-left:auto;display:flex;gap:6px}
+  .kpi{display:flex;gap:10px;flex-wrap:wrap}
+  .kpi .pill strong{font-size:1rem}
+  footer{padding:28px 16px;color:var(--muted);text-align:center;border-top:1px solid #1f2937;margin-top:auto}
+  /* show/hide sections */
+  .section{display:none}
+  .section.active{display:block}
+</style>
 </head>
 <body>
-  <header>
-    <h1>🌐 Bienvenido a mi Página</h1>
-  </header>
+<header>
+  <div class="wrap">
+    <h1>🔧 Utilidades Web – 100% Estático</h1>
+    <div class="sub">Lista de tareas, Pomodoro, Gastos con exportación, Notas con auto-guardado, Conversor y Tema oscuro (todo guardado en tu navegador).</div>
+    <nav id="tabs">
+      <button data-tab="tareas" class="active">✅ Tareas</button>
+      <button data-tab="pomodoro">⏱️ Pomodoro</button>
+      <button data-tab="gastos">💸 Gastos</button>
+      <button data-tab="notas">📝 Notas</button>
+      <button data-tab="conversor">🔁 Conversor</button>
+      <button id="themeBtn" title="Cambiar tema">🌓 Tema</button>
+    </nav>
+  </div>
+</header>
 
-  <section>
-    <p>Haz clic en los botones y mira lo que pasa 😎</p>
-    <button onclick="saludar()">Saludar</button>
-    <button onclick="cambiarColor()">Cambiar Color</button>
-    <button onclick="animarCaja()">Animar Caja</button>
+<main class="wrap">
+  <!-- TAREAS -->
+  <section id="tareas" class="section active">
+    <div class="grid">
+      <div class="card">
+        <h2>✅ Lista de tareas (con guardado)</h2>
+        <div class="row">
+          <input id="todoInput" type="text" placeholder="Escribe una tarea y pulsa Agregar…" />
+          <button class="btn primary" id="addTodo">Agregar</button>
+        </div>
+        <div class="kpi" style="margin-top:10px">
+          <span class="pill">Total: <strong id="kTotal">0</strong></span>
+          <span class="pill">Hechas: <strong id="kDone">0</strong></span>
+          <span class="pill">Pendientes: <strong id="kPending">0</strong></span>
+        </div>
+        <div class="list" id="todoList" aria-live="polite"></div>
+        <div class="row wrap" style="margin-top:10px">
+          <button class="btn ghost" id="clearDone">Limpiar hechas</button>
+          <button class="btn danger" id="clearAll">Borrar todo</button>
+        </div>
+        <p class="muted" style="margin-top:8px">Se guarda automáticamente en <em>localStorage</em>.</p>
+      </div>
+
+      <div class="card">
+        <h2>📤 Importar / Exportar tareas</h2>
+        <div class="row wrap">
+          <button class="btn" id="exportTodos">Exportar JSON</button>
+          <input type="file" id="importTodos" accept="application/json" />
+        </div>
+        <p class="muted">Puedes respaldar tus tareas y moverlas a otra máquina.</p>
+      </div>
+    </div>
   </section>
 
-  <div class="caja" id="caja">CAJA</div>
+  <!-- POMODORO -->
+  <section id="pomodoro" class="section">
+    <div class="grid">
+      <div class="card">
+        <h2>⏱️ Temporizador Pomodoro</h2>
+        <div class="row">
+          <label class="pill">Trabajo: <input id="pWork" type="number" min="1" max="120" value="25" style="width:80px"> min</label>
+          <label class="pill">Descanso: <input id="pBreak" type="number" min="1" max="60" value="5" style="width:80px"> min</label>
+          <label class="pill">Ciclos: <input id="pCycles" type="number" min="1" max="12" value="4" style="width:80px"></label>
+        </div>
+        <div style="font-size:48px;margin:16px 0" id="pClock">25:00</div>
+        <div class="row">
+          <button class="btn primary" id="pStart">Iniciar</button>
+          <button class="btn warn" id="pPause">Pausar</button>
+          <button class="btn" id="pReset">Reiniciar</button>
+        </div>
+        <p class="muted" id="pStatus">Listo para comenzar.</p>
+      </div>
+      <div class="card">
+        <h2>🔔 Notificaciones (opcional)</h2>
+        <p class="muted">Activa notificaciones del navegador para avisos de cambio de fase.</p>
+        <button class="btn" id="askNotif">Permitir notificaciones</button>
+      </div>
+    </div>
+  </section>
 
-  <footer>
-    <p>Creado con 💙 solo con HTML, CSS y JS</p>
-  </footer>
+  <!-- GASTOS -->
+  <section id="gastos" class="section">
+    <div class="grid">
+      <div class="card">
+        <h2>💸 Mini-control de gastos</h2>
+        <div class="row wrap">
+          <input id="gConcept" type="text" placeholder="Concepto" />
+          <input id="gAmount" type="number" inputmode="decimal" placeholder="Monto" />
+          <select id="gType" title="Tipo">
+            <option value="gasto">Gasto</option>
+            <option value="ingreso">Ingreso</option>
+          </select>
+          <button class="btn primary" id="gAdd">Agregar</button>
+        </div>
+        <div class="list" id="gList"></div>
+        <div class="kpi" style="margin-top:10px">
+          <span class="pill">Ingresos: <strong id="kIn">0</strong></span>
+          <span class="pill">Gastos: <strong id="kOut">0</strong></span>
+          <span class="pill">Balance: <strong id="kBal">0</strong></span>
+        </div>
+        <div class="row wrap" style="margin-top:10px">
+          <button class="btn" id="gExportCsv">Exportar CSV</button>
+          <button class="btn ghost" id="gClear">Limpiar</button>
+        </div>
+        <p class="muted">Todo se guarda localmente (no se envía a ningún servidor).</p>
+      </div>
+    </div>
+  </section>
 
-  <script>
-    function saludar() {
-      alert("¡Hola! Bienvenido a esta página de prueba 🚀");
+  <!-- NOTAS -->
+  <section id="notas" class="section">
+    <div class="grid">
+      <div class="card">
+        <h2>📝 Notas con auto-guardado</h2>
+        <textarea id="note" rows="12" placeholder="Escribe aquí…"></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="noteClear">Vaciar</button>
+          <button class="btn" id="noteDownload">Descargar .txt</button>
+          <span class="muted" id="noteSaved" style="margin-left:auto">—</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONVERSOR -->
+  <section id="conversor" class="section">
+    <div class="grid">
+      <div class="card">
+        <h2>🔁 Conversor rápido</h2>
+        <h3 style="margin:.2rem 0">Temperatura</h3>
+        <div class="row wrap">
+          <input id="cC" type="number" placeholder="°C → °F" />
+          <button class="btn" id="btnCF">Convertir</button>
+          <input id="cF" type="number" placeholder="°F → °C" />
+        </div>
+        <h3 style="margin:.8rem 0 .2rem">Distancia</h3>
+        <div class="row wrap">
+          <input id="cKm" type="number" placeholder="km → mi" />
+          <button class="btn" id="btnKmMi">Convertir</button>
+          <input id="cMi" type="number" placeholder="mi → km" />
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Hecho con 💜 HTML + CSS + JS puro. Tus datos se guardan en tu navegador (localStorage).
+</footer>
+
+<script>
+  // ---------- helpers ----------
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => document.querySelectorAll(sel);
+  const store = (k,v)=>localStorage.setItem(k,JSON.stringify(v));
+  const load = (k,fallback)=>JSON.parse(localStorage.getItem(k) || JSON.stringify(fallback));
+  const fmtMoney = n => new Intl.NumberFormat('es-PE',{minimumFractionDigits:2, maximumFractionDigits:2}).format(n);
+
+  // ---------- theme ----------
+  const themeBtn = $("#themeBtn");
+  const THEME_KEY = "app.theme";
+  const setTheme = (mode)=>{
+    if(mode==="light"){
+      document.documentElement.style.setProperty('--bg','#f8fafc');
+      document.documentElement.style.setProperty('--card','#ffffff');
+      document.documentElement.style.setProperty('--text','#0f172a');
+      document.documentElement.style.setProperty('--muted','#475569');
+    }else{
+      document.documentElement.style.setProperty('--bg','#0f172a');
+      document.documentElement.style.setProperty('--card','#111827');
+      document.documentElement.style.setProperty('--text','#e5e7eb');
+      document.documentElement.style.setProperty('--muted','#9ca3af');
     }
+    store(THEME_KEY, mode);
+  };
+  setTheme(load(THEME_KEY,'dark'));
+  themeBtn.onclick = ()=> setTheme(load(THEME_KEY,'dark')==='dark' ? 'light' : 'dark');
 
-    function cambiarColor() {
-      const colores = ["#ff4b5c", "#1fab89", "#f5af19", "#7b2ff7", "#17b978"];
-      document.body.style.background = colores[Math.floor(Math.random() * colores.length)];
-    }
+  // ---------- tabs ----------
+  const tabs = $("#tabs");
+  tabs.addEventListener("click", (e)=>{
+    const btn = e.target.closest("button[data-tab]");
+    if(!btn) return;
+    $$(".section").forEach(s=>s.classList.remove("active"));
+    $$("nav button[data-tab]").forEach(b=>b.classList.remove("active"));
+    $("#"+btn.dataset.tab).classList.add("active");
+    btn.classList.add("active");
+  });
 
-    function animarCaja() {
-      const caja = document.getElementById("caja");
-      caja.style.transform = "rotate(360deg) scale(1.3)";
-      setTimeout(() => {
-        caja.style.transform = "rotate(0deg) scale(1)";
-      }, 800);
+  // ---------- TAREAS ----------
+  const TODO_KEY = "app.todos";
+  let todos = load(TODO_KEY, []);
+  const todoList = $("#todoList");
+  const kTotal = $("#kTotal"), kDone=$("#kDone"), kPending=$("#kPending");
+
+  function renderTodos(){
+    todoList.innerHTML = "";
+    let done=0;
+    todos.forEach((t,i)=>{
+      const li = document.createElement("div");
+      li.className = "todo"+(t.done?" done":"");
+      li.innerHTML = `
+        <input type="checkbox" ${t.done?"checked":""} aria-label="Marcar pendiente/terminado" />
+        <span>${t.text}</span>
+        <div class="right">
+          <button class="btn" data-act="edit">✏️</button>
+          <button class="btn danger" data-act="del">🗑️</button>
+        </div>
+      `;
+      li.querySelector("input").onchange = ()=>{
+        t.done = !t.done; store(TODO_KEY,todos); renderTodos()
+      };
+      li.querySelector('[data-act="del"]').onclick = ()=>{
+        todos.splice(i,1); store(TODO_KEY,todos); renderTodos()
+      };
+      li.querySelector('[data-act="edit"]').onclick = ()=>{
+        const nv = prompt("Editar tarea:", t.text);
+        if(nv!==null && nv.trim()){
+          t.text = nv.trim(); store(TODO_KEY,todos); renderTodos();
+        }
+      };
+      todoList.appendChild(li);
+      if(t.done) done++;
+    });
+    kTotal.textContent = todos.length;
+    kDone.textContent = done;
+    kPending.textContent = Math.max(0, todos.length-done);
+  }
+  renderTodos();
+
+  $("#addTodo").onclick = ()=>{
+    const v = $("#todoInput").value.trim();
+    if(!v) return $("#todoInput").focus();
+    todos.unshift({text:v, done:false, ts:Date.now()});
+    store(TODO_KEY,todos);
+    $("#todoInput").value="";
+    renderTodos();
+  };
+  $("#todoInput").addEventListener("keydown", e=>{ if(e.key==="Enter") $("#addTodo").click() });
+  $("#clearDone").onclick = ()=>{ todos = todos.filter(t=>!t.done); store(TODO_KEY,todos); renderTodos() };
+  $("#clearAll").onclick = ()=>{ if(confirm("¿Borrar todas las tareas?")){ todos=[]; store(TODO_KEY,todos); renderTodos() }};
+
+  // export/import
+  $("#exportTodos").onclick = ()=>{
+    const blob = new Blob([JSON.stringify(todos,null,2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "tareas.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+  $("#importTodos").onchange = async (e)=>{
+    const file = e.target.files[0]; if(!file) return;
+    try{
+      const txt = await file.text();
+      const data = JSON.parse(txt);
+      if(!Array.isArray(data)) throw new Error("Formato inválido");
+      todos = data; store(TODO_KEY,todos); renderTodos();
+      alert("Tareas importadas ✅");
+    }catch(err){ alert("No se pudo importar: "+err.message) }
+    e.target.value = "";
+  };
+
+  // ---------- POMODORO ----------
+  const pClock=$("#pClock"), pStatus=$("#pStatus");
+  let pTimer=null, pMode="work", pRemaining=0, pCycle=0;
+  function fmtTime(sec){
+    const m = Math.floor(sec/60).toString().padStart(2,"0");
+    const s = Math.floor(sec%60).toString().padStart(2,"0");
+    return `${m}:${s}`;
+  }
+  function notify(text){
+    try{
+      if(Notification.permission==="granted"){
+        new Notification(text);
+      }
+    }catch(e){}
+  }
+  function setPhase(mode){
+    pMode = mode;
+    const workMin = +$("#pWork").value||25;
+    const breakMin = +$("#pBreak").value||5;
+    pRemaining = (mode==="work" ? workMin : breakMin)*60;
+    pStatus.textContent = mode==="work" ? `Foco (ciclo ${pCycle+1})` : "Descanso";
+    pClock.textContent = fmtTime(pRemaining);
+  }
+  function tick(){
+    if(pRemaining<=0){
+      clearInterval(pTimer); pTimer=null;
+      const totalCycles = +$("#pCycles").value||4;
+      if(pMode==="work"){
+        notify("⏱️ ¡Tiempo de descanso!");
+        setPhase("break");
+        pTimer=setInterval(tick,1000);
+      }else{
+        pCycle++;
+        notify("✅ Ciclo completado");
+        if(pCycle>=totalCycles){ pStatus.textContent="Sesión finalizada"; return; }
+        setPhase("work");
+        pTimer=setInterval(tick,1000);
+      }
+      return;
     }
-  </script>
+    pRemaining--; pClock.textContent = fmtTime(pRemaining);
+  }
+  $("#pStart").onclick = ()=>{
+    if(pTimer) return;
+    if(pRemaining===0) setPhase("work");
+    pTimer = setInterval(tick,1000);
+    pStatus.textContent += " • En curso…";
+  };
+  $("#pPause").onclick = ()=>{ if(pTimer){ clearInterval(pTimer); pTimer=null; pStatus.textContent="Pausado"; }};
+  $("#pReset").onclick = ()=>{
+    if(pTimer){ clearInterval(pTimer); pTimer=null; }
+    pCycle=0; setPhase("work"); pStatus.textContent="Listo para comenzar.";
+  };
+  $("#askNotif").onclick = ()=> { if("Notification" in window) Notification.requestPermission() };
+
+  // ---------- GASTOS ----------
+  const G_KEY="app.gastos";
+  let gastos = load(G_KEY,[]);
+  const gList = $("#gList");
+  function renderGastos(){
+    gList.innerHTML="";
+    let inSum=0,outSum=0;
+    gastos.forEach((g,i)=>{
+      const row=document.createElement("div");
+      row.className="todo";
+      const sign = g.type==="ingreso" ? "+" : "−";
+      const color = g.type==="ingreso" ? "ok" : "danger";
+      row.innerHTML = `
+        <span class="pill ${color}">${g.type}</span>
+        <span>${g.concept}</span>
+        <strong class="right">${sign} S/ ${fmtMoney(g.amount)}</strong>
+        <button class="btn danger" data-del>Eliminar</button>
+      `;
+      row.querySelector("[data-del]").onclick = ()=>{
+        gastos.splice(i,1); store(G_KEY,gastos); renderGastos();
+      };
+      gList.appendChild(row);
+      if(g.type==="ingreso") inSum+=g.amount; else outSum+=g.amount;
+    });
+    $("#kIn").textContent = "S/ " + fmtMoney(inSum);
+    $("#kOut").textContent = "S/ " + fmtMoney(outSum);
+    $("#kBal").textContent = "S/ " + fmtMoney(inSum - outSum);
+  }
+  renderGastos();
+
+  $("#gAdd").onclick = ()=>{
+    const concept = $("#gConcept").value.trim();
+    const amount = parseFloat($("#gAmount").value);
+    const type = $("#gType").value;
+    if(!concept || !isFinite(amount)) return alert("Completa concepto y monto.");
+    gastos.unshift({concept, amount, type, ts:Date.now()});
+    store(G_KEY,gastos); renderGastos();
+    $("#gConcept").value=""; $("#gAmount").value="";
+  };
+  $("#gClear").onclick = ()=>{ if(confirm("¿Eliminar todos los movimientos?")){ gastos=[]; store(G_KEY,gastos); renderGastos() }};
+
+  $("#gExportCsv").onclick = ()=>{
+    const head = "fecha, tipo, concepto, monto\n";
+    const rows = gastos.map(g=>{
+      const d = new Date(g.ts).toISOString();
+      return `${d},${g.type},${g.concept.replaceAll(","," ")},${g.amount}`;
+    }).join("\n");
+    const blob = new Blob([head+rows],{type:"text/csv"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "gastos.csv";
+    a.click(); URL.revokeObjectURL(a.href);
+  };
+
+  // ---------- NOTAS ----------
+  const NOTE_KEY="app.note";
+  const note = $("#note");
+  const noteSaved = $("#noteSaved");
+  note.value = load(NOTE_KEY,"");
+  noteSaved.textContent = "Cargado";
+  let noteDebounce = null;
+  note.addEventListener("input", ()=>{
+    clearTimeout(noteDebounce);
+    noteDebounce = setTimeout(()=>{
+      store(NOTE_KEY, note.value);
+      noteSaved.textContent = "Guardado " + new Date().toLocaleTimeString();
+    }, 300);
+  });
+  $("#noteClear").onclick = ()=>{ if(confirm("¿Vaciar nota?")){ note.value=""; store(NOTE_KEY,""); noteSaved.textContent="Vacío" }};
+  $("#noteDownload").onclick = ()=>{
+    const blob = new Blob([note.value],{type:"text/plain"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download="nota.txt"; a.click(); URL.revokeObjectURL(a.href);
+  };
+
+  // ---------- CONVERSOR ----------
+  $("#btnCF").onclick = ()=>{
+    const c = $("#cC").value;
+    const f = $("#cF").value;
+    if(c !== "") $("#cF").value = (c*9/5 + 32).toFixed(2);
+    if(f !== "") $("#cC").value = ((f-32)*5/9).toFixed(2);
+  };
+  $("#btnKmMi").onclick = ()=>{
+    const km = $("#cKm").value;
+    const mi = $("#cMi").value;
+    if(km !== "") $("#cMi").value = (km*0.621371).toFixed(3);
+    if(mi !== "") $("#cKm").value = (mi/0.621371).toFixed(3);
+  };
+</script>
 </body>
 </html>
