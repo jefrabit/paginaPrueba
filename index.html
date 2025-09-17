@@ -3,469 +3,247 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Herramientas Web – Full Funcional</title>
-<meta name="description" content="Suite estática: locker cifrado, compresor de imágenes, visor CSV, editor Markdown y grabadora de audio.">
+<title>YouTube Link Toolkit (legal)</title>
 <style>
-  :root{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--accent:#7c3aed;--ring:rgba(124,58,237,.35);--line:#1f2937}
+  :root{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--ring:rgba(34,197,94,.25);--line:#1f2937}
   *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:var(--bg);color:var(--text)}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,Ubuntu,sans-serif}
   header{position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#1e293b,#0b1020);border-bottom:1px solid var(--line);padding:16px}
-  .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 16px}
   h1{margin:0;font-size:clamp(20px,4vw,28px);font-weight:800}
   .sub{color:var(--muted);margin-top:6px}
-  nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-  nav button{background:#0b1222;border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:12px;cursor:pointer}
-  nav button.active{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
-  main{padding:18px 0}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.25)}
-  .card h2{margin:0 0 10px;font-size:1.1rem}
-  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  input,textarea,select{width:100%;background:#0b1222;border:1px solid #243041;color:var(--text);padding:10px;border-radius:10px;outline:none}
-  input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:16px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  input,select{background:#0b1222;border:1px solid #243041;color:var(--text);padding:10px;border-radius:10px;outline:none}
+  input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
   .btn{background:#1f2937;border:1px solid #334155;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer}
   .btn.primary{background:var(--accent);border-color:transparent}
-  .btn.ghost{background:transparent;border:1px dashed #334155}
-  .muted{color:var(--muted);font-size:.92rem}
-  .section{display:none}.section.active{display:block}
-  table{width:100%;border-collapse:collapse;border:1px solid var(--line)}
-  th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;font-size:.95rem}
-  th.sticky{position:sticky;top:0;background:#0b1222;z-index:1}
-  .k{display:inline-flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-  .pill{display:inline-flex;align-items:center;gap:6px;background:#0b1222;border:1px solid #243041;color:var(--text);padding:6px 10px;border-radius:999px}
-  footer{border-top:1px solid var(--line);padding:24px 16px;text-align:center;color:var(--muted)}
+  .muted{color:var(--muted);font-size:.95rem}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:900px){.two{grid-template-columns:1fr}}
-  .ok{color:#22c55e}.warn{color:#f59e0b}.bad{color:#ef4444}
-  canvas{max-width:100%;background:#0b1222;border:1px dashed #334155;border-radius:12px}
-  .code{white-space:pre-wrap;background:#0b1222;border:1px solid #243041;border-radius:10px;padding:10px;font-family:ui-monospace, SFMono-Regular, Menlo, monospace}
+  .pill{display:inline-flex;align-items:center;gap:6px;background:#0b1222;border:1px solid #243041;color:var(--text);padding:6px 10px;border-radius:999px}
+  .list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .item{display:flex;align-items:center;gap:8px;background:#0b1222;border:1px solid #243041;padding:8px;border-radius:12px}
+  a.link{color:#93c5fd;text-decoration:none}
+  a.link:hover{text-decoration:underline}
+  footer{border-top:1px solid var(--line);padding:24px 16px;text-align:center;color:var(--muted);margin-top:20px}
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1>🧰 Herramientas Web – Full Funcional (100% estático)</h1>
-    <div class="sub">Locker cifrado | Compresor de imágenes | CSV visor | Markdown | Grabadora de audio</div>
-    <nav id="tabs">
-      <button data-tab="locker" class="active">🔐 Locker cifrado</button>
-      <button data-tab="img">🖼️ Compresor</button>
-      <button data-tab="csv">📄 CSV visor</button>
-      <button data-tab="md">✍️ Markdown</button>
-      <button data-tab="rec">🎙️ Grabadora</button>
-    </nav>
+    <h1>🧰 YouTube Link Toolkit (legal)</h1>
+    <div class="sub">Reproduce a máxima calidad disponible, crea enlaces con timestamps, miniaturas y playlist local. No descarga videos.</div>
   </div>
 </header>
 
 <main class="wrap">
-  <!-- LOCKER CIFRADO -->
-  <section id="locker" class="section active">
-    <div class="grid">
-      <div class="card">
-        <h2>🔐 Locker cifrado (AES-GCM, WebCrypto)</h2>
-        <p class="muted">Guarda pares <b>nombre → secreto</b> (contraseñas/notas). Todo se cifra en tu navegador con tu clave maestra.</p>
-        <div class="row">
-          <input id="lkMaster" type="password" placeholder="Clave maestra (mín. 6)" />
-          <button class="btn primary" id="lkUnlock">Desbloquear / crear</button>
-        </div>
-        <div id="lkUI" style="display:none;margin-top:12px">
-          <div class="row">
-            <input id="lkName" placeholder="Nombre (p. ej. correo, banco, wifi)" />
-            <input id="lkSecret" placeholder="Secreto / contraseña / nota" />
-            <button class="btn" id="lkAdd">Guardar</button>
-            <button class="btn ghost" id="lkBackup">Exportar JSON cifrado</button>
-            <input type="file" id="lkRestore" accept="application/json" />
-          </div>
-          <div class="k">
-            <span class="pill">Entradas: <b id="lkCount">0</b></span>
-            <span class="pill">Estado: <b id="lkState" class="ok">Cifrado activo</b></span>
-          </div>
-          <div id="lkList" class="grid" style="margin-top:10px"></div>
-        </div>
-        <p class="muted" style="margin-top:8px">Tu JSON cifrado se guarda en <em>localStorage</em>. Si olvidas la clave maestra, no hay recuperación.</p>
-      </div>
-      <div class="card">
-        <h2>🔎 ¿Cómo funciona?</h2>
-        <ol class="muted" style="margin:0 0 8px 18px">
-          <li>Se deriva una llave desde tu clave maestra con PBKDF2 (100,000 iteraciones).</li>
-          <li>Se cifra/descifra con AES-GCM usando IV aleatorio por entrada.</li>
-          <li>Se almacena un blob JSON cifrado en localStorage (no se envía nada).</li>
-        </ol>
-        <div class="code">Consejo: usa una frase larga como clave maestra (ej. "café-llamas-🦙-2025")</div>
-      </div>
+  <!-- Input principal -->
+  <div class="card">
+    <h2>1) Pega un enlace de YouTube</h2>
+    <div class="row">
+      <input id="ytUrl" placeholder="https://www.youtube.com/watch?v=VIDEO_ID o https://youtu.be/VIDEO_ID" style="flex:1"/>
+      <button class="btn primary" id="loadBtn">Cargar</button>
     </div>
-  </section>
+    <p class="muted">Nota: esto respeta los Términos de YouTube. Si deseas uso offline, utiliza la app oficial o YouTube Premium con descargas en la app.</p>
+  </div>
 
-  <!-- COMPRESOR DE IMÁGENES -->
-  <section id="img" class="section">
-    <div class="grid">
-      <div class="card">
-        <h2>🖼️ Compresor / Redimensionador</h2>
-        <div class="row">
-          <input type="file" id="imFile" accept="image/*"/>
-          <input type="number" id="imWidth" placeholder="Ancho (px, 0 = original)" value="0" style="max-width:160px"/>
-          <select id="imFmt">
-            <option>image/jpeg</option>
-            <option>image/webp</option>
-            <option>image/png</option>
-          </select>
-          <label class="pill">Calidad (0–1): <input id="imQ" type="number" step="0.05" min="0" max="1" value="0.8" style="width:90px"></label>
-          <button class="btn primary" id="imRun">Procesar</button>
+  <!-- Player + calidad -->
+  <div class="card">
+    <h2>2) Reprodúcelo a la mejor calidad disponible</h2>
+    <div class="two">
+      <div>
+        <div id="playerContainer" style="aspect-ratio:16/9;background:#0b1222;border:1px dashed #334155;border-radius:12px"></div>
+        <div class="row" style="margin-top:10px">
+          <label class="pill">Calidad:
+            <select id="qualitySel">
+              <option value="highres">highres (máxima)</option>
+              <option value="hd2160">2160p</option>
+              <option value="hd1440">1440p</option>
+              <option value="hd1080">1080p</option>
+              <option value="hd720">720p</option>
+              <option value="large">480p</option>
+              <option value="medium">360p</option>
+              <option value="small">240p</option>
+              <option value="tiny">144p</option>
+              <option value="default">auto</option>
+            </select>
+          </label>
+          <button class="btn" id="applyQ">Aplicar</button>
         </div>
-        <div class="two" style="margin-top:10px">
-          <div>
-            <h3>Original</h3>
-            <img id="imPreview" style="max-width:100%;border-radius:12px;border:1px solid #243041"/>
-            <div class="muted" id="imMetaO">—</div>
-          </div>
-          <div>
-            <h3>Resultado</h3>
-            <canvas id="imCanvas"></canvas>
-            <div class="row" style="margin-top:8px">
-              <button class="btn" id="imDownload">Descargar</button>
-              <span class="muted" id="imMetaR">—</span>
-            </div>
-          </div>
-        </div>
+        <p class="muted">El reproductor intentará esa calidad si el video/tu conexión lo permiten.</p>
       </div>
-      <div class="card">
-        <h2>ℹ️ Tips</h2>
-        <ul class="muted" style="margin:0 0 0 18px">
-          <li>Usa <b>WebP</b> + calidad 0.7–0.85 para buen equilibrio.</li>
-          <li>Si pones ancho 0, conserva tamaño original.</li>
-          <li>PNG ignora la calidad (sin pérdidas); ideal para transparencias.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
 
-  <!-- CSV VISOR -->
-  <section id="csv" class="section">
-    <div class="grid">
-      <div class="card">
-        <h2>📄 Visor / Filtro CSV</h2>
+      <!-- Timestamps -->
+      <div>
+        <h3>Recortes para compartir (sin descargar)</h3>
         <div class="row">
-          <input type="file" id="csvFile" accept=".csv,text/csv"/>
-          <input id="csvSearch" placeholder="Filtrar (contiene)…"/>
-          <button class="btn" id="csvExport">Exportar filtro</button>
+          <input id="startSec" type="number" min="0" placeholder="Inicio (seg)"/>
+          <input id="endSec" type="number" min="0" placeholder="Fin (seg, opcional)"/>
+          <button class="btn" id="genLinks">Generar enlaces</button>
         </div>
-        <div style="overflow:auto;margin-top:10px;max-height:60vh">
-          <table id="csvTable"></table>
-        </div>
-        <div class="k"><span class="pill">Filas: <b id="csvRows">0</b></span></div>
-        <p class="muted">Separador detectado automáticamente (coma o punto y coma). Arrastra el CSV directo a la página también.</p>
-      </div>
-      <div class="card">
-        <h2>Consejo</h2>
-        <p class="muted">Para archivos grandes, filtra primero para reducir filas y luego exporta.</p>
-      </div>
-    </div>
-  </section>
+        <div class="list" id="linksList"></div>
 
-  <!-- MARKDOWN -->
-  <section id="md" class="section">
-    <div class="grid">
-      <div class="card">
-        <h2>✍️ Editor Markdown</h2>
-        <div class="two">
-          <textarea id="mdInput" rows="18" placeholder="# Título\n\nEscribe Markdown aquí… **negrita**, _itálica_, listas, `código`, etc."></textarea>
-          <div class="card" style="background:#0b1222;border:1px dashed #334155">
-            <div id="mdPreview" style="min-height:100%;"></div>
-          </div>
-        </div>
-        <div class="row" style="margin-top:8px">
-          <button class="btn" id="mdDownload">Descargar .md</button>
-          <button class="btn" id="mdDownloadHtml">Descargar .html</button>
-        </div>
-        <p class="muted">Sin librerías externas. Conversión simple a HTML (segura, con saneamiento básico).</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- GRABADORA -->
-  <section id="rec" class="section">
-    <div class="grid">
-      <div class="card">
-        <h2>🎙️ Grabadora de audio</h2>
+        <h3 style="margin-top:14px">Playlist local</h3>
         <div class="row">
-          <button class="btn primary" id="recStart">Iniciar</button>
-          <button class="btn" id="recStop" disabled>Detener</button>
+          <button class="btn" id="addToList">Añadir video actual</button>
+          <button class="btn" id="clearList">Vaciar lista</button>
         </div>
-        <div id="recList" class="list" style="margin-top:10px"></div>
-        <p class="muted">Usa el micrófono del navegador (MediaRecorder). Descarga en <code>.webm</code>.</p>
-      </div>
-      <div class="card">
-        <h2>Privacidad</h2>
-        <p class="muted">Nada se sube a servidores. Todo ocurre en tu navegador.</p>
+        <div id="playlist" class="list"></div>
       </div>
     </div>
-  </section>
+  </div>
+
+  <!-- Miniaturas -->
+  <div class="card">
+    <h2>3) Miniaturas oficiales</h2>
+    <p class="muted">Útiles para carátulas o compartir (respeta los derechos de autor y el uso permitido).</p>
+    <div class="two">
+      <div>
+        <img id="thumbMax" alt="maxresdefault" style="width:100%;border-radius:12px;border:1px solid #243041"/>
+        <div class="row" style="margin-top:6px">
+          <a id="dlMax" class="link" target="_blank" rel="noopener">Abrir maxres</a>
+        </div>
+      </div>
+      <div>
+        <img id="thumbHQ" alt="hqdefault" style="width:100%;border-radius:12px;border:1px solid #243041"/>
+        <div class="row" style="margin-top:6px;gap:12px">
+          <a id="dlHQ" class="link" target="_blank" rel="noopener">Abrir HQ</a>
+          <a id="dlSD" class="link" target="_blank" rel="noopener">Abrir SD</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ayuda legal -->
+  <div class="card">
+    <h2>Legal y buenas prácticas</h2>
+    <ul class="muted">
+      <li>Este sitio no descarga ni almacena videos. Solo usa el reproductor oficial (IFrame API) y URLs públicas.</li>
+      <li>Para uso offline, usa la app oficial o **YouTube Premium**. Para contenido propio, **YouTube Studio** permite descargar tus subidas.</li>
+      <li>Respeta derechos de autor al usar miniaturas o compartir fragmentos.</li>
+    </ul>
+  </div>
 </main>
 
-<footer>
-  Hecho con 💜 HTML + CSS + JS puro. Funciona 100% estático en GitHub Pages.
-</footer>
+<footer>Hecho con 💚 HTML + CSS + JS. Compatible con GitHub Pages.</footer>
 
+<!-- Carga de la IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
-  // ===== Navegación de pestañas =====
-  const $ = s => document.querySelector(s); const $$ = s => document.querySelectorAll(s);
-  $("#tabs").addEventListener("click", e=>{
-    const b = e.target.closest("button[data-tab]"); if(!b) return;
-    $$(".section").forEach(s=>s.classList.remove("active"));
-    $$("nav button").forEach(x=>x.classList.remove("active"));
-    $("#"+b.dataset.tab).classList.add("active"); b.classList.add("active");
-  });
+  const $ = s => document.querySelector(s);
+  let player = null, currentId = null;
 
-  // ====== LOCKER CIFRADO (AES-GCM + PBKDF2) ======
-  const LK_KEY = "suite.locker";
-  const lkMaster = $("#lkMaster"), lkUnlock=$("#lkUnlock"), lkUI=$("#lkUI"), lkList=$("#lkList"), lkCount=$("#lkCount"), lkState=$("#lkState");
-  let lkItems = []; // [{name, data}] donde data = ciphertext base64 + iv base64
-  let lkKey = null; // CryptoKey derivada
-  function b64ab(b64){return Uint8Array.from(atob(b64), c=>c.charCodeAt(0)).buffer}
-  function ab2b64(ab){return btoa(String.fromCharCode(...new Uint8Array(ab)))}
-  async function deriveKey(pass, salt){
-    const enc = new TextEncoder();
-    const base = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
-    return crypto.subtle.deriveKey(
-      {name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
-      base, {name:"AES-GCM", length:256}, false, ["encrypt","decrypt"]
-    );
-  }
-  async function lkLoad(){
-    const raw = localStorage.getItem(LK_KEY);
-    if(!raw) return {salt:null, items:[]};
-    try{ const obj = JSON.parse(raw); return obj } catch { return {salt:null, items:[]} }
-  }
-  async function lkSave(salt, items){
-    localStorage.setItem(LK_KEY, JSON.stringify({salt:ab2b64(salt), items}));
-  }
-  async function lkRender(){
-    lkList.innerHTML=""; lkCount.textContent=lkItems.length;
-    lkItems.forEach((it,idx)=>{
-      const card = document.createElement("div"); card.className="card";
-      card.innerHTML = `
-        <div class="row"><b>${it.name}</b>
-          <span class="muted" style="margin-left:auto">${(new Date(it.ts||Date.now())).toLocaleString()}</span>
-        </div>
-        <div class="row"><button class="btn" data-act="reveal">Mostrar</button>
-          <button class="btn" data-act="copy">Copiar</button>
-          <button class="btn" data-act="del">Eliminar</button></div>
-        <div class="code muted" data-secret style="display:none"></div>
-      `;
-      const secretEl = card.querySelector("[data-secret]");
-      card.querySelector('[data-act="reveal"]').onclick = async ()=>{
-        try{
-          const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv: b64ab(it.iv)},
-            lkKey, b64ab(it.ct));
-          secretEl.textContent = new TextDecoder().decode(pt);
-          secretEl.style.display = secretEl.style.display==="none" ? "block":"none";
-        }catch(e){ alert("Clave incorrecta o datos dañados."); }
-      };
-      card.querySelector('[data-act="copy"]').onclick = async ()=>{
-        try{
-          const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv: b64ab(it.iv)}, lkKey, b64ab(it.ct));
-          await navigator.clipboard.writeText(new TextDecoder().decode(pt));
-          alert("Copiado ✅");
-        }catch(e){ alert("No se pudo copiar (clave incorrecta).") }
-      };
-      card.querySelector('[data-act="del"]').onclick = ()=>{
-        if(confirm("¿Eliminar entrada?")){ lkItems.splice(idx,1); lkSave(b64ab(lkData.salt), lkItems); lkRender(); }
-      };
-      lkList.appendChild(card);
-    });
-  }
-  let lkData = {salt:null, items:[]};
-  let lkSalt = null;
-  lkUnlock.onclick = async ()=>{
-    const pass = lkMaster.value.trim(); if(pass.length<6) return alert("Clave maestra mínima 6 caracteres.");
-    lkData = await lkLoad();
-    if(!lkData.salt){ // inicializa
-      lkSalt = crypto.getRandomValues(new Uint8Array(16));
-      lkKey = await deriveKey(pass, lkSalt);
-      lkItems = []; await lkSave(lkSalt, lkItems);
-    }else{
-      lkSalt = new Uint8Array(b64ab(lkData.salt));
-      lkKey = await deriveKey(pass, lkSalt);
-      lkItems = lkData.items||[];
-    }
-    lkUI.style.display="block"; lkState.textContent="Cifrado activo"; lkState.className="ok"; lkRender();
-  };
-  $("#lkAdd").onclick = async ()=>{
-    if(!lkKey) return alert("Desbloquea primero.");
-    const name = $("#lkName").value.trim(), secret = $("#lkSecret").value;
-    if(!name || !secret) return;
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const ct = await crypto.subtle.encrypt({name:"AES-GCM", iv}, lkKey, new TextEncoder().encode(secret));
-    lkItems.unshift({name, ct:ab2b64(ct), iv:ab2b64(iv), ts:Date.now()});
-    await lkSave(lkSalt, lkItems); $("#lkName").value=""; $("#lkSecret").value=""; lkRender();
-  };
-  $("#lkBackup").onclick = ()=>{
-    const blob = new Blob([localStorage.getItem(LK_KEY)||"{}"], {type:"application/json"});
-    const a = document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="locker-cifrado.json"; a.click(); URL.revokeObjectURL(a.href);
-  };
-  $("#lkRestore").onchange = async (e)=>{
-    const f = e.target.files[0]; if(!f) return; const txt = await f.text();
-    try{ const obj = JSON.parse(txt); if(!obj.salt || !Array.isArray(obj.items)) throw new Error("formato"); localStorage.setItem(LK_KEY, txt); lkData=obj; lkItems=obj.items; await lkRender(); alert("Importado ✅"); }catch(err){ alert("No se pudo importar: "+err.message) }
-    e.target.value="";
-  };
-
-  // ====== COMPRESOR DE IMÁGENES ======
-  const imFile=$("#imFile"), imPreview=$("#imPreview"), imWidth=$("#imWidth"), imFmt=$("#imFmt"), imQ=$("#imQ"), imRun=$("#imRun"), imCanvas=$("#imCanvas"), imDownload=$("#imDownload"), imMetaO=$("#imMetaO"), imMetaR=$("#imMetaR");
-  let imBlobOut=null;
-  imFile.onchange = ()=>{
-    const f = imFile.files[0]; if(!f) return;
-    const url = URL.createObjectURL(f); imPreview.src=url;
-    imPreview.onload = ()=>{ imMetaO.textContent = `Original: ${imPreview.naturalWidth}×${imPreview.naturalHeight} • ${(f.size/1024).toFixed(1)} KB`; }
-  };
-  imRun.onclick = async ()=>{
-    const f = imFile.files[0]; if(!f) return alert("Sube una imagen.");
-    const img = new Image(); img.src = URL.createObjectURL(f); await img.decode();
-    const targetW = parseInt(imWidth.value)||0;
-    const w = targetW>0 ? targetW : img.naturalWidth;
-    const h = Math.round(img.naturalHeight * (w / img.naturalWidth));
-    imCanvas.width = w; imCanvas.height = h;
-    const ctx = imCanvas.getContext("2d");
-    ctx.drawImage(img,0,0,w,h);
-    const q = Math.min(1, Math.max(0, parseFloat(imQ.value)||0.8));
-    const mime = imFmt.value;
-    imCanvas.toBlob(b=>{
-      imBlobOut=b;
-      imMetaR.textContent = `Salida: ${w}×${h} • ${(b.size/1024).toFixed(1)} KB`;
-    }, mime, q);
-  };
-  imDownload.onclick = ()=>{
-    if(!imBlobOut) return;
-    const a=document.createElement("a"); a.href=URL.createObjectURL(imBlobOut); a.download="imagen_optimiz."+ (imFmt.value.endsWith("png")?"png": imFmt.value.endsWith("webp")?"webp":"jpg");
-    a.click(); URL.revokeObjectURL(a.href);
-  };
-
-  // ====== CSV VISOR/FILTRO ======
-  const csvFile=$("#csvFile"), csvTable=$("#csvTable"), csvSearch=$("#csvSearch"), csvExport=$("#csvExport"), csvRows=$("#csvRows");
-  let csvData = []; // array de arrays
-  function parseCSV(text){
-    // separador: detecta ; si hay más ; que , en primeras líneas
-    const lines = text.split(/\r?\n/); const first = lines.slice(0,5).join("\n");
-    const sep = (first.match(/;/g)||[]).length > (first.match(/,/g)||[]).length ? ";" : ",";
-    const out=[]; let row=[], cur="", inQ=false;
-    const pushCell=()=>{ row.push(cur); cur="" };
-    const pushRow=()=>{ out.push(row); row=[] };
-    for(let i=0;i<text.length;i++){
-      const c=text[i];
-      if(c==='"'){ if(inQ && text[i+1]==='"'){cur+='"'; i++;} else inQ=!inQ; continue; }
-      if(!inQ && (c==="\n" || c==="\r")){ if(c==="\r" && text[i+1]==="\n") i++; pushCell(); pushRow(); continue; }
-      if(!inQ && c===sep){ pushCell(); continue; }
-      cur+=c;
-    }
-    if(cur.length || row.length){ pushCell(); pushRow(); }
-    return out;
-  }
-  function renderCSV(data){
-    csvTable.innerHTML="";
-    if(!data.length) { csvRows.textContent="0"; return; }
-    const thead = document.createElement("thead");
-    const trh = document.createElement("tr");
-    data[0].forEach(h=>{
-      const th=document.createElement("th"); th.textContent=h; th.className="sticky"; trh.appendChild(th);
-    });
-    thead.appendChild(trh); csvTable.appendChild(thead);
-    const tb=document.createElement("tbody");
-    for(let i=1;i<data.length;i++){
-      const tr=document.createElement("tr");
-      data[i].forEach(c=>{ const td=document.createElement("td"); td.textContent=c; tr.appendChild(td); });
-      tb.appendChild(tr);
-    }
-    csvTable.appendChild(tb); csvRows.textContent=(data.length-1);
-  }
-  csvFile.onchange = async e=>{
-    const f = e.target.files[0]; if(!f) return; const txt = await f.text();
-    csvData = parseCSV(txt); renderCSV(csvData);
-  };
-  csvSearch.oninput = ()=>{
-    if(!csvData.length) return;
-    const q = csvSearch.value.toLowerCase();
-    if(!q){ renderCSV(csvData); return; }
-    const head = csvData[0];
-    const filtered = [head, ...csvData.slice(1).filter(r=> r.some(c=> (c||"").toLowerCase().includes(q)))];
-    renderCSV(filtered);
-  };
-  csvExport.onclick = ()=>{
-    if(!csvData.length) return;
-    // exporta lo visible (si hay filtro aplicado)
-    const rows=[...csvTable.querySelectorAll("tbody tr")].map(tr=>[...tr.children].map(td=> td.textContent.replaceAll('"','""')));
-    const head=[...csvTable.querySelectorAll("thead th")].map(th=> th.textContent.replaceAll('"','""'));
-    const csv = [head, ...rows].map(r=> '"'+r.join('","')+'"').join("\n");
-    const blob=new Blob([csv],{type:"text/csv"});
-    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="filtro.csv"; a.click(); URL.revokeObjectURL(a.href);
-  };
-  // arrastrar CSV
-  document.addEventListener("dragover", e=>{ e.preventDefault() });
-  document.addEventListener("drop", async e=>{
-    if(!e.dataTransfer.files.length) return;
-    const f = e.dataTransfer.files[0]; if(!/csv|text\/plain|text\/csv/.test(f.type) && !f.name.endsWith(".csv")) return;
-    e.preventDefault(); const txt=await f.text(); csvData=parseCSV(txt); renderCSV(csvData);
-  });
-
-  // ====== MARKDOWN ======
-  const mdInput=$("#mdInput"), mdPreview=$("#mdPreview"), mdDownload=$("#mdDownload"), mdDownloadHtml=$("#mdDownloadHtml");
-  function esc(s){return s.replace(/[&<>"]/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[m]))}
-  function mdToHtml(md){
-    // conversión básica segura: headings, bold, italic, code, links, lists
-    md = md.replace(/\r\n/g,"\n");
-    const lines = md.split("\n");
-    let html=""; let inList=false;
-    const flush=()=>{ if(inList){ html+="</ul>"; inList=false; } }
-    for(const line of lines){
-      if(/^#{1,6}\s/.test(line)){ flush(); const lvl=line.match(/^#+/)[0].length; html+=`<h${lvl}>${esc(line.slice(lvl).trim())}</h${lvl}>`; continue; }
-      if(/^\s*[-*]\s+/.test(line)){ if(!inList){ html+="<ul>"; inList=true; } html+=`<li>${fmtInline(line.replace(/^\s*[-*]\s+/,""))}</li>`; continue; }
-      if(line.trim()===""){ flush(); html+="<br/>"; continue; }
-      html+=`<p>${fmtInline(line)}</p>`;
-    }
-    flush(); return html;
-  }
-  function fmtInline(t){
-    // **bold**, _italic_, `code`, [text](url)
-    t = esc(t);
-    t = t.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
-    t = t.replace(/_(.+?)_/g,"<i>$1</i>");
-    t = t.replace(/`(.+?)`/g,"<code>$1</code>");
-    t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-    return t;
-  }
-  mdInput.addEventListener("input", ()=> mdPreview.innerHTML = mdToHtml(mdInput.value) );
-  mdPreview.innerHTML = mdToHtml(mdInput.value||"");
-  mdDownload.onclick = ()=>{
-    const blob=new Blob([mdInput.value],{type:"text/markdown"}); const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob); a.download="nota.md"; a.click(); URL.revokeObjectURL(a.href);
-  };
-  mdDownloadHtml.onclick = ()=>{
-    const html = `<!DOCTYPE html><meta charset="utf-8"><title>MD Export</title><style>body{font-family:system-ui;padding:20px}code{background:#eee;padding:2px 4px;border-radius:4px}</style>${mdToHtml(mdInput.value)}`;
-    const blob=new Blob([html],{type:"text/html"}); const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob); a.download="nota.html"; a.click(); URL.revokeObjectURL(a.href);
-  };
-
-  // ====== GRABADORA ======
-  const recStart=$("#recStart"), recStop=$("#recStop"), recList=$("#recList");
-  let mediaRec=null, chunks=[];
-  recStart.onclick = async ()=>{
+  // Parse robusto de ID
+  function extractVideoId(url){
     try{
-      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-      mediaRec = new MediaRecorder(stream);
-      chunks=[];
-      mediaRec.ondataavailable = e=>{ if(e.data.size) chunks.push(e.data) };
-      mediaRec.onstop = ()=>{
-        const blob = new Blob(chunks,{type:"audio/webm"});
-        const url = URL.createObjectURL(blob);
-        const card = document.createElement("div"); card.className="card";
-        card.innerHTML = `<audio controls src="${url}" style="width:100%"></audio>
-                          <div class="row" style="margin-top:6px">
-                            <a class="btn" href="${url}" download="grabacion.webm">Descargar</a>
-                          </div>`;
-        recList.prepend(card);
-      };
-      mediaRec.start(); recStart.disabled=true; recStop.disabled=false;
-    }catch(err){ alert("No se pudo acceder al micrófono: "+err.message); }
+      if(!url) return null;
+      // soporto youtu.be/<id>, youtube.com/watch?v=<id>, youtube.com/shorts/<id>, y parámetros extras
+      const u = new URL(url);
+      if(u.hostname.includes("youtu.be")) return u.pathname.split("/")[1] || null;
+      if(u.searchParams.get("v")) return u.searchParams.get("v");
+      const parts = u.pathname.split("/");
+      const idx = parts.findIndex(p => p === "shorts" || p === "embed");
+      if(idx>=0 && parts[idx+1]) return parts[idx+1];
+      return null;
+    }catch{ return null; }
+  }
+
+  // API callback global
+  window.onYouTubeIframeAPIReady = ()=>{
+    // instanciamos vacío; cargaremos video al pulsar "Cargar"
+    player = new YT.Player('playerContainer', {
+      height:'360', width:'640',
+      videoId: '',
+      playerVars: { rel:0, modestbranding:1, playsinline:1 },
+      events: { 'onReady': onReady }
+    });
   };
-  recStop.onclick = ()=>{
-    if(mediaRec && mediaRec.state!=="inactive"){ mediaRec.stop(); recStart.disabled=false; recStop.disabled=true; }
+  function onReady(){ /* listo */ }
+
+  // Cargar video
+  $("#loadBtn").onclick = ()=>{
+    const url = $("#ytUrl").value.trim();
+    const id = extractVideoId(url);
+    if(!id){ alert("URL no válida."); return; }
+    currentId = id;
+    player.loadVideoById({videoId:id});
+    // set calidad máxima como intento
+    setTimeout(()=> { try{ player.setPlaybackQuality('highres'); }catch(e){} }, 800);
+    renderThumbs();
+  };
+
+  // Calidad manual
+  $("#applyQ").onclick = ()=>{
+    try{
+      const q = $("#qualitySel").value;
+      player.setPlaybackQuality(q);
+    }catch(e){ alert("No fue posible cambiar calidad en este momento."); }
+  };
+
+  // Enlaces con timestamps
+  $("#genLinks").onclick = ()=>{
+    if(!currentId) return alert("Carga un video primero.");
+    const s = parseInt($("#startSec").value||"0",10);
+    const e = parseInt($("#endSec").value||"0",10);
+    const baseWatch = `https://www.youtube.com/watch?v=${currentId}`;
+    const baseEmbed = `https://www.youtube.com/embed/${currentId}`;
+    const watch = s>0 ? `${baseWatch}&t=${s}s` : baseWatch;
+    const embed = `${baseEmbed}?start=${Math.max(0,s)}${e>0?`&end=${Math.max(e,s+1)}`:''}`;
+    $("#linksList").innerHTML = `
+      <div class="item"><span class="pill">YouTube</span>
+        <a class="link" href="${watch}" target="_blank" rel="noopener">Abrir en YouTube (t=${s||0}s)</a>
+      </div>
+      <div class="item"><span class="pill">Embed</span>
+        <a class="link" href="${embed}" target="_blank" rel="noopener">Enlace embed con start${e?"/end":""}</a>
+      </div>
+      <div class="item"><span class="pill">Actual</span>
+        <a class="link" href="https://youtu.be/${currentId}" target="_blank" rel="noopener">https://youtu.be/${currentId}</a>
+      </div>
+    `;
+  };
+
+  // Thumbnails oficiales
+  function renderThumbs(){
+    if(!currentId) return;
+    const max = `https://img.youtube.com/vi/${currentId}/maxresdefault.jpg`;
+    const hq  = `https://img.youtube.com/vi/${currentId}/hqdefault.jpg`;
+    const sd  = `https://img.youtube.com/vi/${currentId}/sddefault.jpg`;
+    $("#thumbMax").src = max; $("#dlMax").href = max;
+    $("#thumbHQ").src = hq;  $("#dlHQ").href = hq; $("#dlSD").href = sd;
+  }
+
+  // Playlist local
+  const KEY = "yt.toolkit.list";
+  function loadList(){ try{ return JSON.parse(localStorage.getItem(KEY)||"[]"); }catch{ return []; } }
+  function saveList(a){ localStorage.setItem(KEY, JSON.stringify(a)); }
+  function renderList(){
+    const list = loadList();
+    $("#playlist").innerHTML = list.map(id=>`
+      <div class="item">
+        <img src="https://img.youtube.com/vi/${id}/default.jpg" alt="" style="width:120px;border-radius:8px;border:1px solid #243041"/>
+        <a class="link" href="https://youtu.be/${id}" target="_blank" rel="noopener">${id}</a>
+        <span style="margin-left:auto"></span>
+        <button class="btn" data-play="${id}">▶</button>
+        <button class="btn" data-del="${id}">🗑</button>
+      </div>`).join("");
+    // acciones
+    $("#playlist").querySelectorAll("[data-play]").forEach(b=>{
+      b.onclick = ()=>{ currentId = b.dataset.play; player.loadVideoById({videoId:currentId}); setTimeout(()=>player.setPlaybackQuality('highres'), 800); renderThumbs(); };
+    });
+    $("#playlist").querySelectorAll("[data-del]").forEach(b=>{
+      b.onclick = ()=>{ const id=b.dataset.del; const a=loadList().filter(x=>x!==id); saveList(a); renderList(); };
+    });
+  }
+  renderList();
+
+  $("#addToList").onclick = ()=>{
+    if(!currentId) return alert("Carga un video primero.");
+    const a = loadList(); if(!a.includes(currentId)) a.unshift(currentId);
+    saveList(a); renderList();
+  };
+  $("#clearList").onclick = ()=>{
+    if(confirm("¿Vaciar playlist local?")){ saveList([]); renderList(); }
   };
 </script>
 </body>
