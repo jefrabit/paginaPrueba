@@ -3,83 +3,67 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Descargador de Imágenes</title>
+<title>Analizador de Links</title>
 <style>
   body { font-family: Arial, sans-serif; margin: 20px; background: #0f172a; color: #f1f5f9; }
   h1 { color: #38bdf8; }
   input, button { padding: 10px; border-radius: 8px; border: none; }
   input { width: 60%; }
   button { background: #38bdf8; color: black; cursor: pointer; margin-left: 5px; }
-  #gallery { display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap: 12px; margin-top: 20px; }
-  .card { background: #1e293b; padding: 10px; border-radius: 10px; text-align: center; }
-  img { max-width: 100%; border-radius: 6px; }
-  a { display: inline-block; margin-top: 6px; color: #38bdf8; text-decoration: none; font-size: 14px; }
+  .card { background: #1e293b; padding: 15px; border-radius: 12px; margin-top: 20px; }
+  .pill { display:inline-block; padding:4px 10px; border-radius:8px; background:#0b1222; margin:2px; }
 </style>
 </head>
 <body>
-  <h1>📸 Descargador de Imágenes</h1>
-  <p>Pega una URL y obtén todas las imágenes de esa página (solo sitios que permitan CORS).</p>
-  <input id="url" type="text" placeholder="https://ejemplo.com">
-  <button onclick="extraerImagenes()">Obtener imágenes</button>
-  <button onclick="descargarZIP()">Descargar todo (.zip)</button>
-  <div id="gallery"></div>
+  <h1>🔗 Analizador de Links</h1>
+  <p>Pega cualquier enlace y obtén detalles (dominio, ruta, parámetros, QR).</p>
+  <input id="url" type="text" placeholder="https://ejemplo.com/page?x=1&y=2">
+  <button onclick="analizar()">Analizar</button>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <div id="result" class="card" style="display:none"></div>
+
+  <div id="qr" class="card" style="display:none">
+    <h2>📱 Código QR del link</h2>
+    <canvas id="qrcanvas"></canvas>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script>
-let imagenes = [];
-
-async function extraerImagenes() {
-  const url = document.getElementById("url").value.trim();
-  if(!url) return alert("Introduce una URL.");
-
+function analizar() {
+  const input = document.getElementById("url").value.trim();
+  if (!input) return alert("Ingresa un enlace válido.");
+  let u;
   try {
-    const resp = await fetch(url);
-    const html = await resp.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-
-    imagenes = [];
-    document.getElementById("gallery").innerHTML = "";
-
-    doc.querySelectorAll("img").forEach((img, i) => {
-      let src = img.getAttribute("src");
-      if(src && !src.startsWith("http")) {
-        try {
-          src = new URL(src, url).href; // convertir relativo a absoluto
-        } catch {}
-      }
-      if(src) {
-        imagenes.push(src);
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `<img src="${src}" alt="img${i}">
-                          <a href="${src}" download target="_blank">Descargar</a>`;
-        document.getElementById("gallery").appendChild(card);
-      }
-    });
-
-    if(imagenes.length === 0) alert("No se encontraron imágenes o el sitio bloquea la carga.");
+    u = new URL(input);
   } catch(e) {
-    alert("Error al obtener la página (¿CORS bloqueado?): " + e);
-  }
-}
-
-async function descargarZIP() {
-  if(imagenes.length === 0) return alert("No hay imágenes para descargar.");
-  const zip = new JSZip();
-  const folder = zip.folder("imagenes");
-
-  for(let i=0;i<imagenes.length;i++) {
-    try {
-      const res = await fetch(imagenes[i]);
-      const blob = await res.blob();
-      folder.file("img"+(i+1)+".jpg", blob);
-    } catch {}
+    return alert("URL no válida.");
   }
 
-  const content = await zip.generateAsync({type:"blob"});
-  saveAs(content, "imagenes.zip");
+  let html = `<h2>Detalles del enlace</h2>`;
+  html += `<p><b>Protocolo:</b> ${u.protocol}</p>`;
+  html += `<p><b>Dominio:</b> ${u.hostname}</p>`;
+  html += `<p><b>Ruta:</b> ${u.pathname}</p>`;
+
+  if (u.searchParams.toString()) {
+    html += `<p><b>Parámetros:</b></p><div>`;
+    for (const [k,v] of u.searchParams.entries()) {
+      html += `<span class="pill">${k} = ${v}</span>`;
+    }
+    html += `</div>`;
+  } else {
+    html += `<p><b>Parámetros:</b> ninguno</p>`;
+  }
+
+  html += `<p><a href="${u.href}" target="_blank" style="color:#38bdf8">Abrir enlace</a></p>`;
+
+  document.getElementById("result").innerHTML = html;
+  document.getElementById("result").style.display = "block";
+
+  // Generar QR
+  document.getElementById("qr").style.display = "block";
+  QRCode.toCanvas(document.getElementById("qrcanvas"), u.href, { width: 200 }, function (error) {
+    if (error) console.error(error);
+  });
 }
 </script>
 </body>
