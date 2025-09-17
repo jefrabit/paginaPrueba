@@ -1,466 +1,471 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Utilidades – Página Funcional</title>
-<meta name="description" content="Página estática con utilidades: tareas, pomodoro, gastos, notas, conversor y tema oscuro."/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Herramientas Web – Full Funcional</title>
+<meta name="description" content="Suite estática: locker cifrado, compresor de imágenes, visor CSV, editor Markdown y grabadora de audio.">
 <style>
-  :root{
-    --bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--accent:#7c3aed;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;--ring:rgba(124,58,237,.35)
-  }
-  *{box-sizing:border-box} html,body{height:100%}
-  body{
-    margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
-    background:var(--bg);color:var(--text);display:flex;flex-direction:column;gap:20px
-  }
-  header{
-    padding:18px 16px;background:linear-gradient(135deg,#1e293b 0%,#0b1020 100%);
-    position:sticky;top:0;z-index:10;border-bottom:1px solid #1f2937
-  }
-  .wrap{max-width:1000px;margin:0 auto;padding:0 16px}
-  h1{margin:0;font-weight:800;letter-spacing:.3px;font-size:clamp(20px,4vw,28px)}
-  .sub{color:var(--muted);font-size:.95rem;margin-top:6px}
-  nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-  nav button{
-    background:#0b1222;border:1px solid #1f2937;color:var(--text);padding:8px 12px;border-radius:12px;cursor:pointer
-  }
+  :root{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--accent:#7c3aed;--ring:rgba(124,58,237,.35);--line:#1f2937}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:var(--bg);color:var(--text)}
+  header{position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#1e293b,#0b1020);border-bottom:1px solid var(--line);padding:16px}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+  h1{margin:0;font-size:clamp(20px,4vw,28px);font-weight:800}
+  .sub{color:var(--muted);margin-top:6px}
+  nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  nav button{background:#0b1222;border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:12px;cursor:pointer}
   nav button.active{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-  .card{
-    background:var(--card);border:1px solid #1f2937;border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.25)
-  }
-  .card h2{margin:0 0 10px 0;font-size:1.05rem}
-  input[type="text"], input[type="number"], textarea, select{
-    width:100%;background:#0b1222;border:1px solid #243041;color:var(--text);
-    padding:10px;border-radius:10px;outline:none
-  }
-  input:focus, textarea:focus, select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
-  .row{display:flex;gap:8px;align-items:center}
-  .row.wrap{flex-wrap:wrap}
-  .btn{
-    background:#1f2937;border:1px solid #334155;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer
-  }
+  main{padding:18px 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.25)}
+  .card h2{margin:0 0 10px;font-size:1.1rem}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  input,textarea,select{width:100%;background:#0b1222;border:1px solid #243041;color:var(--text);padding:10px;border-radius:10px;outline:none}
+  input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+  .btn{background:#1f2937;border:1px solid #334155;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer}
   .btn.primary{background:var(--accent);border-color:transparent}
   .btn.ghost{background:transparent;border:1px dashed #334155}
-  .btn.ok{background:var(--ok)}
-  .btn.warn{background:var(--warn)}
-  .btn.danger{background:var(--danger)}
-  .muted{color:var(--muted);font-size:.9rem}
+  .muted{color:var(--muted);font-size:.92rem}
+  .section{display:none}.section.active{display:block}
+  table{width:100%;border-collapse:collapse;border:1px solid var(--line)}
+  th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;font-size:.95rem}
+  th.sticky{position:sticky;top:0;background:#0b1222;z-index:1}
+  .k{display:inline-flex;gap:8px;flex-wrap:wrap;margin-top:8px}
   .pill{display:inline-flex;align-items:center;gap:6px;background:#0b1222;border:1px solid #243041;color:var(--text);padding:6px 10px;border-radius:999px}
-  .list{display:flex;flex-direction:column;gap:8px;margin-top:8px;max-height:260px;overflow:auto;padding-right:4px}
-  .todo{display:flex;align-items:center;gap:10px;background:#0b1222;border:1px solid #222c3d;padding:8px;border-radius:12px}
-  .todo.done{opacity:.6;text-decoration:line-through}
-  .right{margin-left:auto;display:flex;gap:6px}
-  .kpi{display:flex;gap:10px;flex-wrap:wrap}
-  .kpi .pill strong{font-size:1rem}
-  footer{padding:28px 16px;color:var(--muted);text-align:center;border-top:1px solid #1f2937;margin-top:auto}
-  /* show/hide sections */
-  .section{display:none}
-  .section.active{display:block}
+  footer{border-top:1px solid var(--line);padding:24px 16px;text-align:center;color:var(--muted)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:900px){.two{grid-template-columns:1fr}}
+  .ok{color:#22c55e}.warn{color:#f59e0b}.bad{color:#ef4444}
+  canvas{max-width:100%;background:#0b1222;border:1px dashed #334155;border-radius:12px}
+  .code{white-space:pre-wrap;background:#0b1222;border:1px solid #243041;border-radius:10px;padding:10px;font-family:ui-monospace, SFMono-Regular, Menlo, monospace}
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1>🔧 Utilidades Web – 100% Estático</h1>
-    <div class="sub">Lista de tareas, Pomodoro, Gastos con exportación, Notas con auto-guardado, Conversor y Tema oscuro (todo guardado en tu navegador).</div>
+    <h1>🧰 Herramientas Web – Full Funcional (100% estático)</h1>
+    <div class="sub">Locker cifrado | Compresor de imágenes | CSV visor | Markdown | Grabadora de audio</div>
     <nav id="tabs">
-      <button data-tab="tareas" class="active">✅ Tareas</button>
-      <button data-tab="pomodoro">⏱️ Pomodoro</button>
-      <button data-tab="gastos">💸 Gastos</button>
-      <button data-tab="notas">📝 Notas</button>
-      <button data-tab="conversor">🔁 Conversor</button>
-      <button id="themeBtn" title="Cambiar tema">🌓 Tema</button>
+      <button data-tab="locker" class="active">🔐 Locker cifrado</button>
+      <button data-tab="img">🖼️ Compresor</button>
+      <button data-tab="csv">📄 CSV visor</button>
+      <button data-tab="md">✍️ Markdown</button>
+      <button data-tab="rec">🎙️ Grabadora</button>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <!-- TAREAS -->
-  <section id="tareas" class="section active">
+  <!-- LOCKER CIFRADO -->
+  <section id="locker" class="section active">
     <div class="grid">
       <div class="card">
-        <h2>✅ Lista de tareas (con guardado)</h2>
+        <h2>🔐 Locker cifrado (AES-GCM, WebCrypto)</h2>
+        <p class="muted">Guarda pares <b>nombre → secreto</b> (contraseñas/notas). Todo se cifra en tu navegador con tu clave maestra.</p>
         <div class="row">
-          <input id="todoInput" type="text" placeholder="Escribe una tarea y pulsa Agregar…" />
-          <button class="btn primary" id="addTodo">Agregar</button>
+          <input id="lkMaster" type="password" placeholder="Clave maestra (mín. 6)" />
+          <button class="btn primary" id="lkUnlock">Desbloquear / crear</button>
         </div>
-        <div class="kpi" style="margin-top:10px">
-          <span class="pill">Total: <strong id="kTotal">0</strong></span>
-          <span class="pill">Hechas: <strong id="kDone">0</strong></span>
-          <span class="pill">Pendientes: <strong id="kPending">0</strong></span>
+        <div id="lkUI" style="display:none;margin-top:12px">
+          <div class="row">
+            <input id="lkName" placeholder="Nombre (p. ej. correo, banco, wifi)" />
+            <input id="lkSecret" placeholder="Secreto / contraseña / nota" />
+            <button class="btn" id="lkAdd">Guardar</button>
+            <button class="btn ghost" id="lkBackup">Exportar JSON cifrado</button>
+            <input type="file" id="lkRestore" accept="application/json" />
+          </div>
+          <div class="k">
+            <span class="pill">Entradas: <b id="lkCount">0</b></span>
+            <span class="pill">Estado: <b id="lkState" class="ok">Cifrado activo</b></span>
+          </div>
+          <div id="lkList" class="grid" style="margin-top:10px"></div>
         </div>
-        <div class="list" id="todoList" aria-live="polite"></div>
-        <div class="row wrap" style="margin-top:10px">
-          <button class="btn ghost" id="clearDone">Limpiar hechas</button>
-          <button class="btn danger" id="clearAll">Borrar todo</button>
-        </div>
-        <p class="muted" style="margin-top:8px">Se guarda automáticamente en <em>localStorage</em>.</p>
+        <p class="muted" style="margin-top:8px">Tu JSON cifrado se guarda en <em>localStorage</em>. Si olvidas la clave maestra, no hay recuperación.</p>
       </div>
-
       <div class="card">
-        <h2>📤 Importar / Exportar tareas</h2>
-        <div class="row wrap">
-          <button class="btn" id="exportTodos">Exportar JSON</button>
-          <input type="file" id="importTodos" accept="application/json" />
-        </div>
-        <p class="muted">Puedes respaldar tus tareas y moverlas a otra máquina.</p>
+        <h2>🔎 ¿Cómo funciona?</h2>
+        <ol class="muted" style="margin:0 0 8px 18px">
+          <li>Se deriva una llave desde tu clave maestra con PBKDF2 (100,000 iteraciones).</li>
+          <li>Se cifra/descifra con AES-GCM usando IV aleatorio por entrada.</li>
+          <li>Se almacena un blob JSON cifrado en localStorage (no se envía nada).</li>
+        </ol>
+        <div class="code">Consejo: usa una frase larga como clave maestra (ej. "café-llamas-🦙-2025")</div>
       </div>
     </div>
   </section>
 
-  <!-- POMODORO -->
-  <section id="pomodoro" class="section">
+  <!-- COMPRESOR DE IMÁGENES -->
+  <section id="img" class="section">
     <div class="grid">
       <div class="card">
-        <h2>⏱️ Temporizador Pomodoro</h2>
+        <h2>🖼️ Compresor / Redimensionador</h2>
         <div class="row">
-          <label class="pill">Trabajo: <input id="pWork" type="number" min="1" max="120" value="25" style="width:80px"> min</label>
-          <label class="pill">Descanso: <input id="pBreak" type="number" min="1" max="60" value="5" style="width:80px"> min</label>
-          <label class="pill">Ciclos: <input id="pCycles" type="number" min="1" max="12" value="4" style="width:80px"></label>
-        </div>
-        <div style="font-size:48px;margin:16px 0" id="pClock">25:00</div>
-        <div class="row">
-          <button class="btn primary" id="pStart">Iniciar</button>
-          <button class="btn warn" id="pPause">Pausar</button>
-          <button class="btn" id="pReset">Reiniciar</button>
-        </div>
-        <p class="muted" id="pStatus">Listo para comenzar.</p>
-      </div>
-      <div class="card">
-        <h2>🔔 Notificaciones (opcional)</h2>
-        <p class="muted">Activa notificaciones del navegador para avisos de cambio de fase.</p>
-        <button class="btn" id="askNotif">Permitir notificaciones</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- GASTOS -->
-  <section id="gastos" class="section">
-    <div class="grid">
-      <div class="card">
-        <h2>💸 Mini-control de gastos</h2>
-        <div class="row wrap">
-          <input id="gConcept" type="text" placeholder="Concepto" />
-          <input id="gAmount" type="number" inputmode="decimal" placeholder="Monto" />
-          <select id="gType" title="Tipo">
-            <option value="gasto">Gasto</option>
-            <option value="ingreso">Ingreso</option>
+          <input type="file" id="imFile" accept="image/*"/>
+          <input type="number" id="imWidth" placeholder="Ancho (px, 0 = original)" value="0" style="max-width:160px"/>
+          <select id="imFmt">
+            <option>image/jpeg</option>
+            <option>image/webp</option>
+            <option>image/png</option>
           </select>
-          <button class="btn primary" id="gAdd">Agregar</button>
+          <label class="pill">Calidad (0–1): <input id="imQ" type="number" step="0.05" min="0" max="1" value="0.8" style="width:90px"></label>
+          <button class="btn primary" id="imRun">Procesar</button>
         </div>
-        <div class="list" id="gList"></div>
-        <div class="kpi" style="margin-top:10px">
-          <span class="pill">Ingresos: <strong id="kIn">0</strong></span>
-          <span class="pill">Gastos: <strong id="kOut">0</strong></span>
-          <span class="pill">Balance: <strong id="kBal">0</strong></span>
+        <div class="two" style="margin-top:10px">
+          <div>
+            <h3>Original</h3>
+            <img id="imPreview" style="max-width:100%;border-radius:12px;border:1px solid #243041"/>
+            <div class="muted" id="imMetaO">—</div>
+          </div>
+          <div>
+            <h3>Resultado</h3>
+            <canvas id="imCanvas"></canvas>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" id="imDownload">Descargar</button>
+              <span class="muted" id="imMetaR">—</span>
+            </div>
+          </div>
         </div>
-        <div class="row wrap" style="margin-top:10px">
-          <button class="btn" id="gExportCsv">Exportar CSV</button>
-          <button class="btn ghost" id="gClear">Limpiar</button>
-        </div>
-        <p class="muted">Todo se guarda localmente (no se envía a ningún servidor).</p>
+      </div>
+      <div class="card">
+        <h2>ℹ️ Tips</h2>
+        <ul class="muted" style="margin:0 0 0 18px">
+          <li>Usa <b>WebP</b> + calidad 0.7–0.85 para buen equilibrio.</li>
+          <li>Si pones ancho 0, conserva tamaño original.</li>
+          <li>PNG ignora la calidad (sin pérdidas); ideal para transparencias.</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- NOTAS -->
-  <section id="notas" class="section">
+  <!-- CSV VISOR -->
+  <section id="csv" class="section">
     <div class="grid">
       <div class="card">
-        <h2>📝 Notas con auto-guardado</h2>
-        <textarea id="note" rows="12" placeholder="Escribe aquí…"></textarea>
+        <h2>📄 Visor / Filtro CSV</h2>
+        <div class="row">
+          <input type="file" id="csvFile" accept=".csv,text/csv"/>
+          <input id="csvSearch" placeholder="Filtrar (contiene)…"/>
+          <button class="btn" id="csvExport">Exportar filtro</button>
+        </div>
+        <div style="overflow:auto;margin-top:10px;max-height:60vh">
+          <table id="csvTable"></table>
+        </div>
+        <div class="k"><span class="pill">Filas: <b id="csvRows">0</b></span></div>
+        <p class="muted">Separador detectado automáticamente (coma o punto y coma). Arrastra el CSV directo a la página también.</p>
+      </div>
+      <div class="card">
+        <h2>Consejo</h2>
+        <p class="muted">Para archivos grandes, filtra primero para reducir filas y luego exporta.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARKDOWN -->
+  <section id="md" class="section">
+    <div class="grid">
+      <div class="card">
+        <h2>✍️ Editor Markdown</h2>
+        <div class="two">
+          <textarea id="mdInput" rows="18" placeholder="# Título\n\nEscribe Markdown aquí… **negrita**, _itálica_, listas, `código`, etc."></textarea>
+          <div class="card" style="background:#0b1222;border:1px dashed #334155">
+            <div id="mdPreview" style="min-height:100%;"></div>
+          </div>
+        </div>
         <div class="row" style="margin-top:8px">
-          <button class="btn" id="noteClear">Vaciar</button>
-          <button class="btn" id="noteDownload">Descargar .txt</button>
-          <span class="muted" id="noteSaved" style="margin-left:auto">—</span>
+          <button class="btn" id="mdDownload">Descargar .md</button>
+          <button class="btn" id="mdDownloadHtml">Descargar .html</button>
         </div>
+        <p class="muted">Sin librerías externas. Conversión simple a HTML (segura, con saneamiento básico).</p>
       </div>
     </div>
   </section>
 
-  <!-- CONVERSOR -->
-  <section id="conversor" class="section">
+  <!-- GRABADORA -->
+  <section id="rec" class="section">
     <div class="grid">
       <div class="card">
-        <h2>🔁 Conversor rápido</h2>
-        <h3 style="margin:.2rem 0">Temperatura</h3>
-        <div class="row wrap">
-          <input id="cC" type="number" placeholder="°C → °F" />
-          <button class="btn" id="btnCF">Convertir</button>
-          <input id="cF" type="number" placeholder="°F → °C" />
+        <h2>🎙️ Grabadora de audio</h2>
+        <div class="row">
+          <button class="btn primary" id="recStart">Iniciar</button>
+          <button class="btn" id="recStop" disabled>Detener</button>
         </div>
-        <h3 style="margin:.8rem 0 .2rem">Distancia</h3>
-        <div class="row wrap">
-          <input id="cKm" type="number" placeholder="km → mi" />
-          <button class="btn" id="btnKmMi">Convertir</button>
-          <input id="cMi" type="number" placeholder="mi → km" />
-        </div>
+        <div id="recList" class="list" style="margin-top:10px"></div>
+        <p class="muted">Usa el micrófono del navegador (MediaRecorder). Descarga en <code>.webm</code>.</p>
+      </div>
+      <div class="card">
+        <h2>Privacidad</h2>
+        <p class="muted">Nada se sube a servidores. Todo ocurre en tu navegador.</p>
       </div>
     </div>
   </section>
 </main>
 
 <footer>
-  Hecho con 💜 HTML + CSS + JS puro. Tus datos se guardan en tu navegador (localStorage).
+  Hecho con 💜 HTML + CSS + JS puro. Funciona 100% estático en GitHub Pages.
 </footer>
 
 <script>
-  // ---------- helpers ----------
-  const $ = sel => document.querySelector(sel);
-  const $$ = sel => document.querySelectorAll(sel);
-  const store = (k,v)=>localStorage.setItem(k,JSON.stringify(v));
-  const load = (k,fallback)=>JSON.parse(localStorage.getItem(k) || JSON.stringify(fallback));
-  const fmtMoney = n => new Intl.NumberFormat('es-PE',{minimumFractionDigits:2, maximumFractionDigits:2}).format(n);
-
-  // ---------- theme ----------
-  const themeBtn = $("#themeBtn");
-  const THEME_KEY = "app.theme";
-  const setTheme = (mode)=>{
-    if(mode==="light"){
-      document.documentElement.style.setProperty('--bg','#f8fafc');
-      document.documentElement.style.setProperty('--card','#ffffff');
-      document.documentElement.style.setProperty('--text','#0f172a');
-      document.documentElement.style.setProperty('--muted','#475569');
-    }else{
-      document.documentElement.style.setProperty('--bg','#0f172a');
-      document.documentElement.style.setProperty('--card','#111827');
-      document.documentElement.style.setProperty('--text','#e5e7eb');
-      document.documentElement.style.setProperty('--muted','#9ca3af');
-    }
-    store(THEME_KEY, mode);
-  };
-  setTheme(load(THEME_KEY,'dark'));
-  themeBtn.onclick = ()=> setTheme(load(THEME_KEY,'dark')==='dark' ? 'light' : 'dark');
-
-  // ---------- tabs ----------
-  const tabs = $("#tabs");
-  tabs.addEventListener("click", (e)=>{
-    const btn = e.target.closest("button[data-tab]");
-    if(!btn) return;
+  // ===== Navegación de pestañas =====
+  const $ = s => document.querySelector(s); const $$ = s => document.querySelectorAll(s);
+  $("#tabs").addEventListener("click", e=>{
+    const b = e.target.closest("button[data-tab]"); if(!b) return;
     $$(".section").forEach(s=>s.classList.remove("active"));
-    $$("nav button[data-tab]").forEach(b=>b.classList.remove("active"));
-    $("#"+btn.dataset.tab).classList.add("active");
-    btn.classList.add("active");
+    $$("nav button").forEach(x=>x.classList.remove("active"));
+    $("#"+b.dataset.tab).classList.add("active"); b.classList.add("active");
   });
 
-  // ---------- TAREAS ----------
-  const TODO_KEY = "app.todos";
-  let todos = load(TODO_KEY, []);
-  const todoList = $("#todoList");
-  const kTotal = $("#kTotal"), kDone=$("#kDone"), kPending=$("#kPending");
-
-  function renderTodos(){
-    todoList.innerHTML = "";
-    let done=0;
-    todos.forEach((t,i)=>{
-      const li = document.createElement("div");
-      li.className = "todo"+(t.done?" done":"");
-      li.innerHTML = `
-        <input type="checkbox" ${t.done?"checked":""} aria-label="Marcar pendiente/terminado" />
-        <span>${t.text}</span>
-        <div class="right">
-          <button class="btn" data-act="edit">✏️</button>
-          <button class="btn danger" data-act="del">🗑️</button>
+  // ====== LOCKER CIFRADO (AES-GCM + PBKDF2) ======
+  const LK_KEY = "suite.locker";
+  const lkMaster = $("#lkMaster"), lkUnlock=$("#lkUnlock"), lkUI=$("#lkUI"), lkList=$("#lkList"), lkCount=$("#lkCount"), lkState=$("#lkState");
+  let lkItems = []; // [{name, data}] donde data = ciphertext base64 + iv base64
+  let lkKey = null; // CryptoKey derivada
+  function b64ab(b64){return Uint8Array.from(atob(b64), c=>c.charCodeAt(0)).buffer}
+  function ab2b64(ab){return btoa(String.fromCharCode(...new Uint8Array(ab)))}
+  async function deriveKey(pass, salt){
+    const enc = new TextEncoder();
+    const base = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
+    return crypto.subtle.deriveKey(
+      {name:"PBKDF2", salt, iterations:100000, hash:"SHA-256"},
+      base, {name:"AES-GCM", length:256}, false, ["encrypt","decrypt"]
+    );
+  }
+  async function lkLoad(){
+    const raw = localStorage.getItem(LK_KEY);
+    if(!raw) return {salt:null, items:[]};
+    try{ const obj = JSON.parse(raw); return obj } catch { return {salt:null, items:[]} }
+  }
+  async function lkSave(salt, items){
+    localStorage.setItem(LK_KEY, JSON.stringify({salt:ab2b64(salt), items}));
+  }
+  async function lkRender(){
+    lkList.innerHTML=""; lkCount.textContent=lkItems.length;
+    lkItems.forEach((it,idx)=>{
+      const card = document.createElement("div"); card.className="card";
+      card.innerHTML = `
+        <div class="row"><b>${it.name}</b>
+          <span class="muted" style="margin-left:auto">${(new Date(it.ts||Date.now())).toLocaleString()}</span>
         </div>
+        <div class="row"><button class="btn" data-act="reveal">Mostrar</button>
+          <button class="btn" data-act="copy">Copiar</button>
+          <button class="btn" data-act="del">Eliminar</button></div>
+        <div class="code muted" data-secret style="display:none"></div>
       `;
-      li.querySelector("input").onchange = ()=>{
-        t.done = !t.done; store(TODO_KEY,todos); renderTodos()
+      const secretEl = card.querySelector("[data-secret]");
+      card.querySelector('[data-act="reveal"]').onclick = async ()=>{
+        try{
+          const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv: b64ab(it.iv)},
+            lkKey, b64ab(it.ct));
+          secretEl.textContent = new TextDecoder().decode(pt);
+          secretEl.style.display = secretEl.style.display==="none" ? "block":"none";
+        }catch(e){ alert("Clave incorrecta o datos dañados."); }
       };
-      li.querySelector('[data-act="del"]').onclick = ()=>{
-        todos.splice(i,1); store(TODO_KEY,todos); renderTodos()
+      card.querySelector('[data-act="copy"]').onclick = async ()=>{
+        try{
+          const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv: b64ab(it.iv)}, lkKey, b64ab(it.ct));
+          await navigator.clipboard.writeText(new TextDecoder().decode(pt));
+          alert("Copiado ✅");
+        }catch(e){ alert("No se pudo copiar (clave incorrecta).") }
       };
-      li.querySelector('[data-act="edit"]').onclick = ()=>{
-        const nv = prompt("Editar tarea:", t.text);
-        if(nv!==null && nv.trim()){
-          t.text = nv.trim(); store(TODO_KEY,todos); renderTodos();
-        }
+      card.querySelector('[data-act="del"]').onclick = ()=>{
+        if(confirm("¿Eliminar entrada?")){ lkItems.splice(idx,1); lkSave(b64ab(lkData.salt), lkItems); lkRender(); }
       };
-      todoList.appendChild(li);
-      if(t.done) done++;
+      lkList.appendChild(card);
     });
-    kTotal.textContent = todos.length;
-    kDone.textContent = done;
-    kPending.textContent = Math.max(0, todos.length-done);
   }
-  renderTodos();
-
-  $("#addTodo").onclick = ()=>{
-    const v = $("#todoInput").value.trim();
-    if(!v) return $("#todoInput").focus();
-    todos.unshift({text:v, done:false, ts:Date.now()});
-    store(TODO_KEY,todos);
-    $("#todoInput").value="";
-    renderTodos();
-  };
-  $("#todoInput").addEventListener("keydown", e=>{ if(e.key==="Enter") $("#addTodo").click() });
-  $("#clearDone").onclick = ()=>{ todos = todos.filter(t=>!t.done); store(TODO_KEY,todos); renderTodos() };
-  $("#clearAll").onclick = ()=>{ if(confirm("¿Borrar todas las tareas?")){ todos=[]; store(TODO_KEY,todos); renderTodos() }};
-
-  // export/import
-  $("#exportTodos").onclick = ()=>{
-    const blob = new Blob([JSON.stringify(todos,null,2)], {type:"application/json"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "tareas.json";
-    a.click();
-    URL.revokeObjectURL(a.href);
-  };
-  $("#importTodos").onchange = async (e)=>{
-    const file = e.target.files[0]; if(!file) return;
-    try{
-      const txt = await file.text();
-      const data = JSON.parse(txt);
-      if(!Array.isArray(data)) throw new Error("Formato inválido");
-      todos = data; store(TODO_KEY,todos); renderTodos();
-      alert("Tareas importadas ✅");
-    }catch(err){ alert("No se pudo importar: "+err.message) }
-    e.target.value = "";
-  };
-
-  // ---------- POMODORO ----------
-  const pClock=$("#pClock"), pStatus=$("#pStatus");
-  let pTimer=null, pMode="work", pRemaining=0, pCycle=0;
-  function fmtTime(sec){
-    const m = Math.floor(sec/60).toString().padStart(2,"0");
-    const s = Math.floor(sec%60).toString().padStart(2,"0");
-    return `${m}:${s}`;
-  }
-  function notify(text){
-    try{
-      if(Notification.permission==="granted"){
-        new Notification(text);
-      }
-    }catch(e){}
-  }
-  function setPhase(mode){
-    pMode = mode;
-    const workMin = +$("#pWork").value||25;
-    const breakMin = +$("#pBreak").value||5;
-    pRemaining = (mode==="work" ? workMin : breakMin)*60;
-    pStatus.textContent = mode==="work" ? `Foco (ciclo ${pCycle+1})` : "Descanso";
-    pClock.textContent = fmtTime(pRemaining);
-  }
-  function tick(){
-    if(pRemaining<=0){
-      clearInterval(pTimer); pTimer=null;
-      const totalCycles = +$("#pCycles").value||4;
-      if(pMode==="work"){
-        notify("⏱️ ¡Tiempo de descanso!");
-        setPhase("break");
-        pTimer=setInterval(tick,1000);
-      }else{
-        pCycle++;
-        notify("✅ Ciclo completado");
-        if(pCycle>=totalCycles){ pStatus.textContent="Sesión finalizada"; return; }
-        setPhase("work");
-        pTimer=setInterval(tick,1000);
-      }
-      return;
+  let lkData = {salt:null, items:[]};
+  let lkSalt = null;
+  lkUnlock.onclick = async ()=>{
+    const pass = lkMaster.value.trim(); if(pass.length<6) return alert("Clave maestra mínima 6 caracteres.");
+    lkData = await lkLoad();
+    if(!lkData.salt){ // inicializa
+      lkSalt = crypto.getRandomValues(new Uint8Array(16));
+      lkKey = await deriveKey(pass, lkSalt);
+      lkItems = []; await lkSave(lkSalt, lkItems);
+    }else{
+      lkSalt = new Uint8Array(b64ab(lkData.salt));
+      lkKey = await deriveKey(pass, lkSalt);
+      lkItems = lkData.items||[];
     }
-    pRemaining--; pClock.textContent = fmtTime(pRemaining);
-  }
-  $("#pStart").onclick = ()=>{
-    if(pTimer) return;
-    if(pRemaining===0) setPhase("work");
-    pTimer = setInterval(tick,1000);
-    pStatus.textContent += " • En curso…";
+    lkUI.style.display="block"; lkState.textContent="Cifrado activo"; lkState.className="ok"; lkRender();
   };
-  $("#pPause").onclick = ()=>{ if(pTimer){ clearInterval(pTimer); pTimer=null; pStatus.textContent="Pausado"; }};
-  $("#pReset").onclick = ()=>{
-    if(pTimer){ clearInterval(pTimer); pTimer=null; }
-    pCycle=0; setPhase("work"); pStatus.textContent="Listo para comenzar.";
+  $("#lkAdd").onclick = async ()=>{
+    if(!lkKey) return alert("Desbloquea primero.");
+    const name = $("#lkName").value.trim(), secret = $("#lkSecret").value;
+    if(!name || !secret) return;
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = await crypto.subtle.encrypt({name:"AES-GCM", iv}, lkKey, new TextEncoder().encode(secret));
+    lkItems.unshift({name, ct:ab2b64(ct), iv:ab2b64(iv), ts:Date.now()});
+    await lkSave(lkSalt, lkItems); $("#lkName").value=""; $("#lkSecret").value=""; lkRender();
   };
-  $("#askNotif").onclick = ()=> { if("Notification" in window) Notification.requestPermission() };
-
-  // ---------- GASTOS ----------
-  const G_KEY="app.gastos";
-  let gastos = load(G_KEY,[]);
-  const gList = $("#gList");
-  function renderGastos(){
-    gList.innerHTML="";
-    let inSum=0,outSum=0;
-    gastos.forEach((g,i)=>{
-      const row=document.createElement("div");
-      row.className="todo";
-      const sign = g.type==="ingreso" ? "+" : "−";
-      const color = g.type==="ingreso" ? "ok" : "danger";
-      row.innerHTML = `
-        <span class="pill ${color}">${g.type}</span>
-        <span>${g.concept}</span>
-        <strong class="right">${sign} S/ ${fmtMoney(g.amount)}</strong>
-        <button class="btn danger" data-del>Eliminar</button>
-      `;
-      row.querySelector("[data-del]").onclick = ()=>{
-        gastos.splice(i,1); store(G_KEY,gastos); renderGastos();
-      };
-      gList.appendChild(row);
-      if(g.type==="ingreso") inSum+=g.amount; else outSum+=g.amount;
-    });
-    $("#kIn").textContent = "S/ " + fmtMoney(inSum);
-    $("#kOut").textContent = "S/ " + fmtMoney(outSum);
-    $("#kBal").textContent = "S/ " + fmtMoney(inSum - outSum);
-  }
-  renderGastos();
-
-  $("#gAdd").onclick = ()=>{
-    const concept = $("#gConcept").value.trim();
-    const amount = parseFloat($("#gAmount").value);
-    const type = $("#gType").value;
-    if(!concept || !isFinite(amount)) return alert("Completa concepto y monto.");
-    gastos.unshift({concept, amount, type, ts:Date.now()});
-    store(G_KEY,gastos); renderGastos();
-    $("#gConcept").value=""; $("#gAmount").value="";
+  $("#lkBackup").onclick = ()=>{
+    const blob = new Blob([localStorage.getItem(LK_KEY)||"{}"], {type:"application/json"});
+    const a = document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="locker-cifrado.json"; a.click(); URL.revokeObjectURL(a.href);
   };
-  $("#gClear").onclick = ()=>{ if(confirm("¿Eliminar todos los movimientos?")){ gastos=[]; store(G_KEY,gastos); renderGastos() }};
+  $("#lkRestore").onchange = async (e)=>{
+    const f = e.target.files[0]; if(!f) return; const txt = await f.text();
+    try{ const obj = JSON.parse(txt); if(!obj.salt || !Array.isArray(obj.items)) throw new Error("formato"); localStorage.setItem(LK_KEY, txt); lkData=obj; lkItems=obj.items; await lkRender(); alert("Importado ✅"); }catch(err){ alert("No se pudo importar: "+err.message) }
+    e.target.value="";
+  };
 
-  $("#gExportCsv").onclick = ()=>{
-    const head = "fecha, tipo, concepto, monto\n";
-    const rows = gastos.map(g=>{
-      const d = new Date(g.ts).toISOString();
-      return `${d},${g.type},${g.concept.replaceAll(","," ")},${g.amount}`;
-    }).join("\n");
-    const blob = new Blob([head+rows],{type:"text/csv"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "gastos.csv";
+  // ====== COMPRESOR DE IMÁGENES ======
+  const imFile=$("#imFile"), imPreview=$("#imPreview"), imWidth=$("#imWidth"), imFmt=$("#imFmt"), imQ=$("#imQ"), imRun=$("#imRun"), imCanvas=$("#imCanvas"), imDownload=$("#imDownload"), imMetaO=$("#imMetaO"), imMetaR=$("#imMetaR");
+  let imBlobOut=null;
+  imFile.onchange = ()=>{
+    const f = imFile.files[0]; if(!f) return;
+    const url = URL.createObjectURL(f); imPreview.src=url;
+    imPreview.onload = ()=>{ imMetaO.textContent = `Original: ${imPreview.naturalWidth}×${imPreview.naturalHeight} • ${(f.size/1024).toFixed(1)} KB`; }
+  };
+  imRun.onclick = async ()=>{
+    const f = imFile.files[0]; if(!f) return alert("Sube una imagen.");
+    const img = new Image(); img.src = URL.createObjectURL(f); await img.decode();
+    const targetW = parseInt(imWidth.value)||0;
+    const w = targetW>0 ? targetW : img.naturalWidth;
+    const h = Math.round(img.naturalHeight * (w / img.naturalWidth));
+    imCanvas.width = w; imCanvas.height = h;
+    const ctx = imCanvas.getContext("2d");
+    ctx.drawImage(img,0,0,w,h);
+    const q = Math.min(1, Math.max(0, parseFloat(imQ.value)||0.8));
+    const mime = imFmt.value;
+    imCanvas.toBlob(b=>{
+      imBlobOut=b;
+      imMetaR.textContent = `Salida: ${w}×${h} • ${(b.size/1024).toFixed(1)} KB`;
+    }, mime, q);
+  };
+  imDownload.onclick = ()=>{
+    if(!imBlobOut) return;
+    const a=document.createElement("a"); a.href=URL.createObjectURL(imBlobOut); a.download="imagen_optimiz."+ (imFmt.value.endsWith("png")?"png": imFmt.value.endsWith("webp")?"webp":"jpg");
     a.click(); URL.revokeObjectURL(a.href);
   };
 
-  // ---------- NOTAS ----------
-  const NOTE_KEY="app.note";
-  const note = $("#note");
-  const noteSaved = $("#noteSaved");
-  note.value = load(NOTE_KEY,"");
-  noteSaved.textContent = "Cargado";
-  let noteDebounce = null;
-  note.addEventListener("input", ()=>{
-    clearTimeout(noteDebounce);
-    noteDebounce = setTimeout(()=>{
-      store(NOTE_KEY, note.value);
-      noteSaved.textContent = "Guardado " + new Date().toLocaleTimeString();
-    }, 300);
+  // ====== CSV VISOR/FILTRO ======
+  const csvFile=$("#csvFile"), csvTable=$("#csvTable"), csvSearch=$("#csvSearch"), csvExport=$("#csvExport"), csvRows=$("#csvRows");
+  let csvData = []; // array de arrays
+  function parseCSV(text){
+    // separador: detecta ; si hay más ; que , en primeras líneas
+    const lines = text.split(/\r?\n/); const first = lines.slice(0,5).join("\n");
+    const sep = (first.match(/;/g)||[]).length > (first.match(/,/g)||[]).length ? ";" : ",";
+    const out=[]; let row=[], cur="", inQ=false;
+    const pushCell=()=>{ row.push(cur); cur="" };
+    const pushRow=()=>{ out.push(row); row=[] };
+    for(let i=0;i<text.length;i++){
+      const c=text[i];
+      if(c==='"'){ if(inQ && text[i+1]==='"'){cur+='"'; i++;} else inQ=!inQ; continue; }
+      if(!inQ && (c==="\n" || c==="\r")){ if(c==="\r" && text[i+1]==="\n") i++; pushCell(); pushRow(); continue; }
+      if(!inQ && c===sep){ pushCell(); continue; }
+      cur+=c;
+    }
+    if(cur.length || row.length){ pushCell(); pushRow(); }
+    return out;
+  }
+  function renderCSV(data){
+    csvTable.innerHTML="";
+    if(!data.length) { csvRows.textContent="0"; return; }
+    const thead = document.createElement("thead");
+    const trh = document.createElement("tr");
+    data[0].forEach(h=>{
+      const th=document.createElement("th"); th.textContent=h; th.className="sticky"; trh.appendChild(th);
+    });
+    thead.appendChild(trh); csvTable.appendChild(thead);
+    const tb=document.createElement("tbody");
+    for(let i=1;i<data.length;i++){
+      const tr=document.createElement("tr");
+      data[i].forEach(c=>{ const td=document.createElement("td"); td.textContent=c; tr.appendChild(td); });
+      tb.appendChild(tr);
+    }
+    csvTable.appendChild(tb); csvRows.textContent=(data.length-1);
+  }
+  csvFile.onchange = async e=>{
+    const f = e.target.files[0]; if(!f) return; const txt = await f.text();
+    csvData = parseCSV(txt); renderCSV(csvData);
+  };
+  csvSearch.oninput = ()=>{
+    if(!csvData.length) return;
+    const q = csvSearch.value.toLowerCase();
+    if(!q){ renderCSV(csvData); return; }
+    const head = csvData[0];
+    const filtered = [head, ...csvData.slice(1).filter(r=> r.some(c=> (c||"").toLowerCase().includes(q)))];
+    renderCSV(filtered);
+  };
+  csvExport.onclick = ()=>{
+    if(!csvData.length) return;
+    // exporta lo visible (si hay filtro aplicado)
+    const rows=[...csvTable.querySelectorAll("tbody tr")].map(tr=>[...tr.children].map(td=> td.textContent.replaceAll('"','""')));
+    const head=[...csvTable.querySelectorAll("thead th")].map(th=> th.textContent.replaceAll('"','""'));
+    const csv = [head, ...rows].map(r=> '"'+r.join('","')+'"').join("\n");
+    const blob=new Blob([csv],{type:"text/csv"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="filtro.csv"; a.click(); URL.revokeObjectURL(a.href);
+  };
+  // arrastrar CSV
+  document.addEventListener("dragover", e=>{ e.preventDefault() });
+  document.addEventListener("drop", async e=>{
+    if(!e.dataTransfer.files.length) return;
+    const f = e.dataTransfer.files[0]; if(!/csv|text\/plain|text\/csv/.test(f.type) && !f.name.endsWith(".csv")) return;
+    e.preventDefault(); const txt=await f.text(); csvData=parseCSV(txt); renderCSV(csvData);
   });
-  $("#noteClear").onclick = ()=>{ if(confirm("¿Vaciar nota?")){ note.value=""; store(NOTE_KEY,""); noteSaved.textContent="Vacío" }};
-  $("#noteDownload").onclick = ()=>{
-    const blob = new Blob([note.value],{type:"text/plain"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob); a.download="nota.txt"; a.click(); URL.revokeObjectURL(a.href);
+
+  // ====== MARKDOWN ======
+  const mdInput=$("#mdInput"), mdPreview=$("#mdPreview"), mdDownload=$("#mdDownload"), mdDownloadHtml=$("#mdDownloadHtml");
+  function esc(s){return s.replace(/[&<>"]/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[m]))}
+  function mdToHtml(md){
+    // conversión básica segura: headings, bold, italic, code, links, lists
+    md = md.replace(/\r\n/g,"\n");
+    const lines = md.split("\n");
+    let html=""; let inList=false;
+    const flush=()=>{ if(inList){ html+="</ul>"; inList=false; } }
+    for(const line of lines){
+      if(/^#{1,6}\s/.test(line)){ flush(); const lvl=line.match(/^#+/)[0].length; html+=`<h${lvl}>${esc(line.slice(lvl).trim())}</h${lvl}>`; continue; }
+      if(/^\s*[-*]\s+/.test(line)){ if(!inList){ html+="<ul>"; inList=true; } html+=`<li>${fmtInline(line.replace(/^\s*[-*]\s+/,""))}</li>`; continue; }
+      if(line.trim()===""){ flush(); html+="<br/>"; continue; }
+      html+=`<p>${fmtInline(line)}</p>`;
+    }
+    flush(); return html;
+  }
+  function fmtInline(t){
+    // **bold**, _italic_, `code`, [text](url)
+    t = esc(t);
+    t = t.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
+    t = t.replace(/_(.+?)_/g,"<i>$1</i>");
+    t = t.replace(/`(.+?)`/g,"<code>$1</code>");
+    t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    return t;
+  }
+  mdInput.addEventListener("input", ()=> mdPreview.innerHTML = mdToHtml(mdInput.value) );
+  mdPreview.innerHTML = mdToHtml(mdInput.value||"");
+  mdDownload.onclick = ()=>{
+    const blob=new Blob([mdInput.value],{type:"text/markdown"}); const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob); a.download="nota.md"; a.click(); URL.revokeObjectURL(a.href);
+  };
+  mdDownloadHtml.onclick = ()=>{
+    const html = `<!DOCTYPE html><meta charset="utf-8"><title>MD Export</title><style>body{font-family:system-ui;padding:20px}code{background:#eee;padding:2px 4px;border-radius:4px}</style>${mdToHtml(mdInput.value)}`;
+    const blob=new Blob([html],{type:"text/html"}); const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob); a.download="nota.html"; a.click(); URL.revokeObjectURL(a.href);
   };
 
-  // ---------- CONVERSOR ----------
-  $("#btnCF").onclick = ()=>{
-    const c = $("#cC").value;
-    const f = $("#cF").value;
-    if(c !== "") $("#cF").value = (c*9/5 + 32).toFixed(2);
-    if(f !== "") $("#cC").value = ((f-32)*5/9).toFixed(2);
+  // ====== GRABADORA ======
+  const recStart=$("#recStart"), recStop=$("#recStop"), recList=$("#recList");
+  let mediaRec=null, chunks=[];
+  recStart.onclick = async ()=>{
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      mediaRec = new MediaRecorder(stream);
+      chunks=[];
+      mediaRec.ondataavailable = e=>{ if(e.data.size) chunks.push(e.data) };
+      mediaRec.onstop = ()=>{
+        const blob = new Blob(chunks,{type:"audio/webm"});
+        const url = URL.createObjectURL(blob);
+        const card = document.createElement("div"); card.className="card";
+        card.innerHTML = `<audio controls src="${url}" style="width:100%"></audio>
+                          <div class="row" style="margin-top:6px">
+                            <a class="btn" href="${url}" download="grabacion.webm">Descargar</a>
+                          </div>`;
+        recList.prepend(card);
+      };
+      mediaRec.start(); recStart.disabled=true; recStop.disabled=false;
+    }catch(err){ alert("No se pudo acceder al micrófono: "+err.message); }
   };
-  $("#btnKmMi").onclick = ()=>{
-    const km = $("#cKm").value;
-    const mi = $("#cMi").value;
-    if(km !== "") $("#cMi").value = (km*0.621371).toFixed(3);
-    if(mi !== "") $("#cKm").value = (mi/0.621371).toFixed(3);
+  recStop.onclick = ()=>{
+    if(mediaRec && mediaRec.state!=="inactive"){ mediaRec.stop(); recStart.disabled=false; recStop.disabled=true; }
   };
 </script>
 </body>
