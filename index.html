@@ -1,330 +1,102 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mi Página Web</title>
-  <meta name="description" content="Página web simple, moderna y responsive para GitHub Pages." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌐</text></svg>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página de Prueba</title>
   <style>
-    /* =====================
-       Estilos base
-       ===================== */
-    :root{
-      --bg: #0b0c10;
-      --panel:#12151a;
-      --text:#e6edf3;
-      --muted:#b3c1cf;
-      --brand:#7c3aed; /* morado */
-      --brand-2:#22d3ee; /* cian */
-      --ok:#22c55e;
-      --warn:#f59e0b;
-      --danger:#ef4444;
-      --radius:16px;
-      --shadow:0 10px 30px rgba(0,0,0,.25);
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      text-align: center;
     }
 
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
-      background:linear-gradient(180deg, #0b0c10 0%, #0e1218 100%);
-      color:var(--text);
+    header {
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
     }
-    a{color:inherit; text-decoration:none}
-    img{max-width:100%; display:block}
-    h1,h2,h3{line-height:1.1; letter-spacing:-.02em}
-    p{color:var(--muted)}
 
-    .container{width:min(1100px, 92vw); margin-inline:auto}
-    .grid{display:grid; gap:24px}
-    .btn{
-      display:inline-flex; align-items:center; gap:.6rem;
-      padding:12px 18px; border-radius:999px;
-      background:linear-gradient(135deg,var(--brand),var(--brand-2));
-      color:white; font-weight:600; box-shadow:var(--shadow);
-      border:0; cursor:pointer;
+    h1 {
+      margin: 0;
+      font-size: 2.5rem;
     }
-    .btn.secondary{background:#1f2937}
 
-    /* =====================
-       Header / Navbar
-       ===================== */
-    header{
-      position:sticky; top:0; z-index:50; backdrop-filter:saturate(160%) blur(12px);
-      background:rgba(11,12,16,.6); border-bottom:1px solid rgba(255,255,255,.06)
+    button {
+      margin: 15px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      background: white;
+      color: #2575fc;
+      transition: 0.3s;
     }
-    .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
-    .brand{display:flex; align-items:center; gap:.7rem; font-weight:800}
-    .brand .logo{width:36px; height:36px; border-radius:10px; display:grid; place-items:center;
-      background:radial-gradient(120% 120% at 0% 0%, var(--brand) 0%, var(--brand-2) 100%); box-shadow:var(--shadow)}
-    .menu{display:flex; gap:18px; align-items:center}
-    .menu a{padding:10px 12px; border-radius:10px; color:var(--muted)}
-    .menu a:hover{background:rgba(255,255,255,.06); color:var(--text)}
-    .hamb{display:none}
 
-    /* =====================
-       Hero
-       ===================== */
-    .hero{padding:80px 0 40px}
-    .hero .wrap{display:grid; gap:40px; grid-template-columns:1.1fr .9fr; align-items:center}
-    .hero h1{font-size:clamp(32px, 6vw, 56px); margin:0}
-    .hero p{font-size:clamp(16px, 2.6vw, 20px)}
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow)
+    button:hover {
+      background: #2575fc;
+      color: white;
     }
-    .panel{padding:18px}
 
-    /* =====================
-       Secciones
-       ===================== */
-    section{padding:56px 0; border-top:1px solid rgba(255,255,255,.06)}
-    .kpis{grid-template-columns:repeat(4, minmax(0,1fr))}
-    .kpi{padding:18px}
-    .kpi b{font-size:28px}
+    .caja {
+      margin: 30px auto;
+      width: 200px;
+      height: 200px;
+      background: white;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2575fc;
+      font-weight: bold;
+      font-size: 1.2rem;
+      transition: transform 0.5s ease-in-out;
+    }
 
-    .features{grid-template-columns:repeat(3, minmax(0,1fr))}
-    .feature{padding:22px}
-
-    .gallery{grid-template-columns:repeat(3, minmax(0,1fr))}
-    .gallery img{border-radius:12px; border:1px solid rgba(255,255,255,.08)}
-
-    .contact form{display:grid; gap:14px}
-    .input{background:#0f131a; border:1px solid rgba(255,255,255,.1); color:var(--text);
-      padding:12px 14px; border-radius:12px; outline:0}
-    .input:focus{border-color:var(--brand)}
-
-    footer{padding:36px 0; color:#9fb0c2}
-
-    /* =====================
-       Responsive
-       ===================== */
-    @media (max-width: 900px){
-      .hero .wrap{grid-template-columns:1fr}
-      .kpis{grid-template-columns:repeat(2,1fr)}
-      .features{grid-template-columns:1fr}
-      .gallery{grid-template-columns:1fr 1fr}
-      .menu{display:none}
-      .hamb{display:inline-flex; align-items:center; gap:.4rem; background:#1f2937; color:#e5e7eb; border:0; padding:8px 12px; border-radius:10px}
-      .drawer{display:none; position:fixed; inset:0; background:rgba(0,0,0,.5)}
-      .drawer .sheet{position:absolute; right:0; top:0; bottom:0; width:min(88vw, 360px); background:#0b0f15; padding:18px; border-left:1px solid rgba(255,255,255,.06)}
-      .drawer a{display:block; padding:14px; border-radius:10px; color:var(--muted)}
-      .drawer a:hover{background:rgba(255,255,255,.06); color:var(--text)}
+    footer {
+      margin-top: 50px;
+      padding: 15px;
+      background: rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body>
-  <!-- =====================
-       Navbar
-       ===================== -->
   <header>
-    <div class="container nav">
-      <a class="brand" href="#inicio" aria-label="Ir al inicio">
-        <span class="logo" aria-hidden="true">⚡</span>
-        <span>MiWeb</span>
-      </a>
-      <nav class="menu" aria-label="Principal">
-        <a href="#inicio">Inicio</a>
-        <a href="#caracteristicas">Características</a>
-        <a href="#galeria">Galería</a>
-        <a href="#contacto">Contacto</a>
-        <button id="toggle-theme" class="btn secondary" type="button" aria-pressed="false">Modo claro/oscuro</button>
-      </nav>
-      <button class="hamb" id="open-drawer" aria-controls="drawer" aria-expanded="false">☰ Menú</button>
-    </div>
-    <!-- Drawer móvil -->
-    <div class="drawer" id="drawer" aria-hidden="true">
-      <div class="sheet">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
-          <strong>Menú</strong>
-          <button id="close-drawer" class="btn secondary" type="button">Cerrar</button>
-        </div>
-        <a href="#inicio" onclick="closeDrawer()">Inicio</a>
-        <a href="#caracteristicas" onclick="closeDrawer()">Características</a>
-        <a href="#galeria" onclick="closeDrawer()">Galería</a>
-        <a href="#contacto" onclick="closeDrawer()">Contacto</a>
-      </div>
-    </div>
+    <h1>🌐 Bienvenido a mi Página</h1>
   </header>
 
-  <!-- =====================
-       Hero
-       ===================== -->
-  <section id="inicio" class="hero container">
-    <div class="wrap">
-      <div>
-        <h1>Construye tu página moderna en minutos</h1>
-        <p>
-          Este starter incluye navegación responsive, secciones listas (hero, características,
-          galería y contacto), accesibilidad básica y un interruptor de tema.
-          Sube este archivo a GitHub Pages y ¡listo!
-        </p>
-        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:18px">
-          <a class="btn" href="#contacto">Empezar ahora</a>
-          <a class="btn secondary" href="#caracteristicas">Ver características</a>
-        </div>
-      </div>
-      <div class="card">
-        <div class="panel">
-          <div class="grid kpis">
-            <div class="kpi">
-              <b>100%</b>
-              <p>Responsive</p>
-            </div>
-            <div class="kpi">
-              <b>A11y</b>
-              <p>Etiquetas ARIA</p>
-            </div>
-            <div class="kpi">
-              <b>0 deps</b>
-              <p>Sin librerías</p>
-            </div>
-            <div class="kpi">
-              <b>⚡</b>
-              <p>Rápido</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <section>
+    <p>Haz clic en los botones y mira lo que pasa 😎</p>
+    <button onclick="saludar()">Saludar</button>
+    <button onclick="cambiarColor()">Cambiar Color</button>
+    <button onclick="animarCaja()">Animar Caja</button>
   </section>
 
-  <!-- =====================
-       Características
-       ===================== -->
-  <section id="caracteristicas">
-    <div class="container">
-      <h2>Características</h2>
-      <p>Todo lo que necesitas para iniciar. Edita textos e imágenes a tu gusto.</p>
-      <div class="grid features">
-        <article class="card feature">
-          <h3>Diseño moderno</h3>
-          <p>Tipografías del sistema, gradientes suaves y sombras sutiles. Ajusta colores en <code>:root</code>.</p>
-        </article>
-        <article class="card feature">
-          <h3>Rápido de publicar</h3>
-          <p>Funciona como archivo único. Ideal para <strong>GitHub Pages</strong> sin configuración extra.</p>
-        </article>
-        <article class="card feature">
-          <h3>Escalable</h3>
-          <p>Divide en varios archivos o agrega frameworks cuando lo necesites.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- =====================
-       Galería
-       ===================== -->
-  <section id="galeria">
-    <div class="container">
-      <h2>Galería</h2>
-      <p>Reemplaza estas imágenes por las tuyas (puedes usar .jpg o .png).</p>
-      <div class="grid gallery">
-        <img alt="Imagen de ejemplo 1" src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop" />
-        <img alt="Imagen de ejemplo 2" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop" />
-        <img alt="Imagen de ejemplo 3" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200&auto=format&fit=crop" />
-      </div>
-    </div>
-  </section>
-
-  <!-- =====================
-       Contacto
-       ===================== -->
-  <section id="contacto" class="contact">
-    <div class="container">
-      <h2>Contacto</h2>
-      <p>Este formulario no envía correos por sí solo (necesita backend o un servicio como Formspree). De momento, simula un envío.</p>
-      <form id="form">
-        <label>
-          Nombre
-          <input class="input" name="nombre" placeholder="Tu nombre" required />
-        </label>
-        <label>
-          Correo
-          <input class="input" name="correo" type="email" placeholder="tucorreo@ejemplo.com" required />
-        </label>
-        <label>
-          Mensaje
-          <textarea class="input" name="mensaje" rows="5" placeholder="¿En qué puedo ayudarte?" required></textarea>
-        </label>
-        <button class="btn" type="submit">Enviar</button>
-        <p id="msg" aria-live="polite" style="margin:6px 0 0"></p>
-      </form>
-    </div>
-  </section>
+  <div class="caja" id="caja">CAJA</div>
 
   <footer>
-    <div class="container" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap">
-      <small>© <span id="year"></span> MiWeb. Hecho con ♥️</small>
-      <small><a href="#inicio">Volver arriba ↑</a></small>
-    </div>
+    <p>Creado con 💙 solo con HTML, CSS y JS</p>
   </footer>
 
   <script>
-    // =====================
-    // Utilidades JS
-    // =====================
-    const $ = (s,root=document)=>root.querySelector(s)
-
-    // Año dinámico
-    $('#year').textContent = new Date().getFullYear()
-
-    // Drawer móvil
-    const drawer = $('#drawer')
-    const openBtn = $('#open-drawer')
-    const closeBtn = $('#close-drawer')
-    function openDrawer(){
-      drawer.style.display='block'; drawer.setAttribute('aria-hidden','false')
-      openBtn.setAttribute('aria-expanded','true')
-    }
-    function closeDrawer(){
-      drawer.style.display='none'; drawer.setAttribute('aria-hidden','true')
-      openBtn.setAttribute('aria-expanded','false')
-    }
-    openBtn?.addEventListener('click', openDrawer)
-    closeBtn?.addEventListener('click', closeDrawer)
-    drawer?.addEventListener('click', e=>{ if(e.target===drawer) closeDrawer() })
-
-    // Modo claro/oscuro (guarda preferencia)
-    const toggle = $('#toggle-theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const saved = localStorage.getItem('theme')
-    applyTheme(saved || (prefersDark ? 'dark' : 'light'))
-
-    toggle?.addEventListener('click', () => {
-      const current = document.documentElement.dataset.theme || 'dark'
-      const next = current === 'dark' ? 'light' : 'dark'
-      applyTheme(next)
-      toggle.setAttribute('aria-pressed', String(next==='dark'))
-    })
-
-    function applyTheme(mode){
-      document.documentElement.dataset.theme = mode
-      if(mode==='light'){
-        document.documentElement.style.setProperty('--bg','#f8fafc')
-        document.documentElement.style.setProperty('--panel','#ffffff')
-        document.documentElement.style.setProperty('--text','#0b1220')
-        document.documentElement.style.setProperty('--muted','#445268')
-      }else{
-        document.documentElement.style.setProperty('--bg','#0b0c10')
-        document.documentElement.style.setProperty('--panel','#12151a')
-        document.documentElement.style.setProperty('--text','#e6edf3')
-        document.documentElement.style.setProperty('--muted','#b3c1cf')
-      }
-      localStorage.setItem('theme', mode)
+    function saludar() {
+      alert("¡Hola! Bienvenido a esta página de prueba 🚀");
     }
 
-    // Simulación de envío de formulario
-    $('#form')?.addEventListener('submit', (e)=>{
-      e.preventDefault()
-      const data = Object.fromEntries(new FormData(e.target))
-      $('#msg').textContent = '✅ Gracias, '+data.nombre+' — te responderé pronto (simulado).'
-      e.target.reset()
-    })
+    function cambiarColor() {
+      const colores = ["#ff4b5c", "#1fab89", "#f5af19", "#7b2ff7", "#17b978"];
+      document.body.style.background = colores[Math.floor(Math.random() * colores.length)];
+    }
+
+    function animarCaja() {
+      const caja = document.getElementById("caja");
+      caja.style.transform = "rotate(360deg) scale(1.3)";
+      setTimeout(() => {
+        caja.style.transform = "rotate(0deg) scale(1)";
+      }, 800);
+    }
   </script>
 </body>
 </html>
