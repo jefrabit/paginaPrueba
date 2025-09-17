@@ -1,250 +1,86 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>YouTube Link Toolkit (legal)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Descargador de Imágenes</title>
 <style>
-  :root{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--accent:#22c55e;--ring:rgba(34,197,94,.25);--line:#1f2937}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,Ubuntu,sans-serif}
-  header{position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#1e293b,#0b1020);border-bottom:1px solid var(--line);padding:16px}
-  .wrap{max-width:1000px;margin:0 auto;padding:0 16px}
-  h1{margin:0;font-size:clamp(20px,4vw,28px);font-weight:800}
-  .sub{color:var(--muted);margin-top:6px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:16px}
-  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  input,select{background:#0b1222;border:1px solid #243041;color:var(--text);padding:10px;border-radius:10px;outline:none}
-  input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
-  .btn{background:#1f2937;border:1px solid #334155;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer}
-  .btn.primary{background:var(--accent);border-color:transparent}
-  .muted{color:var(--muted);font-size:.95rem}
-  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media (max-width:900px){.two{grid-template-columns:1fr}}
-  .pill{display:inline-flex;align-items:center;gap:6px;background:#0b1222;border:1px solid #243041;color:var(--text);padding:6px 10px;border-radius:999px}
-  .list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-  .item{display:flex;align-items:center;gap:8px;background:#0b1222;border:1px solid #243041;padding:8px;border-radius:12px}
-  a.link{color:#93c5fd;text-decoration:none}
-  a.link:hover{text-decoration:underline}
-  footer{border-top:1px solid var(--line);padding:24px 16px;text-align:center;color:var(--muted);margin-top:20px}
+  body { font-family: Arial, sans-serif; margin: 20px; background: #0f172a; color: #f1f5f9; }
+  h1 { color: #38bdf8; }
+  input, button { padding: 10px; border-radius: 8px; border: none; }
+  input { width: 60%; }
+  button { background: #38bdf8; color: black; cursor: pointer; margin-left: 5px; }
+  #gallery { display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap: 12px; margin-top: 20px; }
+  .card { background: #1e293b; padding: 10px; border-radius: 10px; text-align: center; }
+  img { max-width: 100%; border-radius: 6px; }
+  a { display: inline-block; margin-top: 6px; color: #38bdf8; text-decoration: none; font-size: 14px; }
 </style>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <h1>🧰 YouTube Link Toolkit (legal)</h1>
-    <div class="sub">Reproduce a máxima calidad disponible, crea enlaces con timestamps, miniaturas y playlist local. No descarga videos.</div>
-  </div>
-</header>
+  <h1>📸 Descargador de Imágenes</h1>
+  <p>Pega una URL y obtén todas las imágenes de esa página (solo sitios que permitan CORS).</p>
+  <input id="url" type="text" placeholder="https://ejemplo.com">
+  <button onclick="extraerImagenes()">Obtener imágenes</button>
+  <button onclick="descargarZIP()">Descargar todo (.zip)</button>
+  <div id="gallery"></div>
 
-<main class="wrap">
-  <!-- Input principal -->
-  <div class="card">
-    <h2>1) Pega un enlace de YouTube</h2>
-    <div class="row">
-      <input id="ytUrl" placeholder="https://www.youtube.com/watch?v=VIDEO_ID o https://youtu.be/VIDEO_ID" style="flex:1"/>
-      <button class="btn primary" id="loadBtn">Cargar</button>
-    </div>
-    <p class="muted">Nota: esto respeta los Términos de YouTube. Si deseas uso offline, utiliza la app oficial o YouTube Premium con descargas en la app.</p>
-  </div>
-
-  <!-- Player + calidad -->
-  <div class="card">
-    <h2>2) Reprodúcelo a la mejor calidad disponible</h2>
-    <div class="two">
-      <div>
-        <div id="playerContainer" style="aspect-ratio:16/9;background:#0b1222;border:1px dashed #334155;border-radius:12px"></div>
-        <div class="row" style="margin-top:10px">
-          <label class="pill">Calidad:
-            <select id="qualitySel">
-              <option value="highres">highres (máxima)</option>
-              <option value="hd2160">2160p</option>
-              <option value="hd1440">1440p</option>
-              <option value="hd1080">1080p</option>
-              <option value="hd720">720p</option>
-              <option value="large">480p</option>
-              <option value="medium">360p</option>
-              <option value="small">240p</option>
-              <option value="tiny">144p</option>
-              <option value="default">auto</option>
-            </select>
-          </label>
-          <button class="btn" id="applyQ">Aplicar</button>
-        </div>
-        <p class="muted">El reproductor intentará esa calidad si el video/tu conexión lo permiten.</p>
-      </div>
-
-      <!-- Timestamps -->
-      <div>
-        <h3>Recortes para compartir (sin descargar)</h3>
-        <div class="row">
-          <input id="startSec" type="number" min="0" placeholder="Inicio (seg)"/>
-          <input id="endSec" type="number" min="0" placeholder="Fin (seg, opcional)"/>
-          <button class="btn" id="genLinks">Generar enlaces</button>
-        </div>
-        <div class="list" id="linksList"></div>
-
-        <h3 style="margin-top:14px">Playlist local</h3>
-        <div class="row">
-          <button class="btn" id="addToList">Añadir video actual</button>
-          <button class="btn" id="clearList">Vaciar lista</button>
-        </div>
-        <div id="playlist" class="list"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Miniaturas -->
-  <div class="card">
-    <h2>3) Miniaturas oficiales</h2>
-    <p class="muted">Útiles para carátulas o compartir (respeta los derechos de autor y el uso permitido).</p>
-    <div class="two">
-      <div>
-        <img id="thumbMax" alt="maxresdefault" style="width:100%;border-radius:12px;border:1px solid #243041"/>
-        <div class="row" style="margin-top:6px">
-          <a id="dlMax" class="link" target="_blank" rel="noopener">Abrir maxres</a>
-        </div>
-      </div>
-      <div>
-        <img id="thumbHQ" alt="hqdefault" style="width:100%;border-radius:12px;border:1px solid #243041"/>
-        <div class="row" style="margin-top:6px;gap:12px">
-          <a id="dlHQ" class="link" target="_blank" rel="noopener">Abrir HQ</a>
-          <a id="dlSD" class="link" target="_blank" rel="noopener">Abrir SD</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Ayuda legal -->
-  <div class="card">
-    <h2>Legal y buenas prácticas</h2>
-    <ul class="muted">
-      <li>Este sitio no descarga ni almacena videos. Solo usa el reproductor oficial (IFrame API) y URLs públicas.</li>
-      <li>Para uso offline, usa la app oficial o **YouTube Premium**. Para contenido propio, **YouTube Studio** permite descargar tus subidas.</li>
-      <li>Respeta derechos de autor al usar miniaturas o compartir fragmentos.</li>
-    </ul>
-  </div>
-</main>
-
-<footer>Hecho con 💚 HTML + CSS + JS. Compatible con GitHub Pages.</footer>
-
-<!-- Carga de la IFrame API -->
-<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script>
-  const $ = s => document.querySelector(s);
-  let player = null, currentId = null;
+let imagenes = [];
 
-  // Parse robusto de ID
-  function extractVideoId(url){
-    try{
-      if(!url) return null;
-      // soporto youtu.be/<id>, youtube.com/watch?v=<id>, youtube.com/shorts/<id>, y parámetros extras
-      const u = new URL(url);
-      if(u.hostname.includes("youtu.be")) return u.pathname.split("/")[1] || null;
-      if(u.searchParams.get("v")) return u.searchParams.get("v");
-      const parts = u.pathname.split("/");
-      const idx = parts.findIndex(p => p === "shorts" || p === "embed");
-      if(idx>=0 && parts[idx+1]) return parts[idx+1];
-      return null;
-    }catch{ return null; }
+async function extraerImagenes() {
+  const url = document.getElementById("url").value.trim();
+  if(!url) return alert("Introduce una URL.");
+
+  try {
+    const resp = await fetch(url);
+    const html = await resp.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    imagenes = [];
+    document.getElementById("gallery").innerHTML = "";
+
+    doc.querySelectorAll("img").forEach((img, i) => {
+      let src = img.getAttribute("src");
+      if(src && !src.startsWith("http")) {
+        try {
+          src = new URL(src, url).href; // convertir relativo a absoluto
+        } catch {}
+      }
+      if(src) {
+        imagenes.push(src);
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `<img src="${src}" alt="img${i}">
+                          <a href="${src}" download target="_blank">Descargar</a>`;
+        document.getElementById("gallery").appendChild(card);
+      }
+    });
+
+    if(imagenes.length === 0) alert("No se encontraron imágenes o el sitio bloquea la carga.");
+  } catch(e) {
+    alert("Error al obtener la página (¿CORS bloqueado?): " + e);
+  }
+}
+
+async function descargarZIP() {
+  if(imagenes.length === 0) return alert("No hay imágenes para descargar.");
+  const zip = new JSZip();
+  const folder = zip.folder("imagenes");
+
+  for(let i=0;i<imagenes.length;i++) {
+    try {
+      const res = await fetch(imagenes[i]);
+      const blob = await res.blob();
+      folder.file("img"+(i+1)+".jpg", blob);
+    } catch {}
   }
 
-  // API callback global
-  window.onYouTubeIframeAPIReady = ()=>{
-    // instanciamos vacío; cargaremos video al pulsar "Cargar"
-    player = new YT.Player('playerContainer', {
-      height:'360', width:'640',
-      videoId: '',
-      playerVars: { rel:0, modestbranding:1, playsinline:1 },
-      events: { 'onReady': onReady }
-    });
-  };
-  function onReady(){ /* listo */ }
-
-  // Cargar video
-  $("#loadBtn").onclick = ()=>{
-    const url = $("#ytUrl").value.trim();
-    const id = extractVideoId(url);
-    if(!id){ alert("URL no válida."); return; }
-    currentId = id;
-    player.loadVideoById({videoId:id});
-    // set calidad máxima como intento
-    setTimeout(()=> { try{ player.setPlaybackQuality('highres'); }catch(e){} }, 800);
-    renderThumbs();
-  };
-
-  // Calidad manual
-  $("#applyQ").onclick = ()=>{
-    try{
-      const q = $("#qualitySel").value;
-      player.setPlaybackQuality(q);
-    }catch(e){ alert("No fue posible cambiar calidad en este momento."); }
-  };
-
-  // Enlaces con timestamps
-  $("#genLinks").onclick = ()=>{
-    if(!currentId) return alert("Carga un video primero.");
-    const s = parseInt($("#startSec").value||"0",10);
-    const e = parseInt($("#endSec").value||"0",10);
-    const baseWatch = `https://www.youtube.com/watch?v=${currentId}`;
-    const baseEmbed = `https://www.youtube.com/embed/${currentId}`;
-    const watch = s>0 ? `${baseWatch}&t=${s}s` : baseWatch;
-    const embed = `${baseEmbed}?start=${Math.max(0,s)}${e>0?`&end=${Math.max(e,s+1)}`:''}`;
-    $("#linksList").innerHTML = `
-      <div class="item"><span class="pill">YouTube</span>
-        <a class="link" href="${watch}" target="_blank" rel="noopener">Abrir en YouTube (t=${s||0}s)</a>
-      </div>
-      <div class="item"><span class="pill">Embed</span>
-        <a class="link" href="${embed}" target="_blank" rel="noopener">Enlace embed con start${e?"/end":""}</a>
-      </div>
-      <div class="item"><span class="pill">Actual</span>
-        <a class="link" href="https://youtu.be/${currentId}" target="_blank" rel="noopener">https://youtu.be/${currentId}</a>
-      </div>
-    `;
-  };
-
-  // Thumbnails oficiales
-  function renderThumbs(){
-    if(!currentId) return;
-    const max = `https://img.youtube.com/vi/${currentId}/maxresdefault.jpg`;
-    const hq  = `https://img.youtube.com/vi/${currentId}/hqdefault.jpg`;
-    const sd  = `https://img.youtube.com/vi/${currentId}/sddefault.jpg`;
-    $("#thumbMax").src = max; $("#dlMax").href = max;
-    $("#thumbHQ").src = hq;  $("#dlHQ").href = hq; $("#dlSD").href = sd;
-  }
-
-  // Playlist local
-  const KEY = "yt.toolkit.list";
-  function loadList(){ try{ return JSON.parse(localStorage.getItem(KEY)||"[]"); }catch{ return []; } }
-  function saveList(a){ localStorage.setItem(KEY, JSON.stringify(a)); }
-  function renderList(){
-    const list = loadList();
-    $("#playlist").innerHTML = list.map(id=>`
-      <div class="item">
-        <img src="https://img.youtube.com/vi/${id}/default.jpg" alt="" style="width:120px;border-radius:8px;border:1px solid #243041"/>
-        <a class="link" href="https://youtu.be/${id}" target="_blank" rel="noopener">${id}</a>
-        <span style="margin-left:auto"></span>
-        <button class="btn" data-play="${id}">▶</button>
-        <button class="btn" data-del="${id}">🗑</button>
-      </div>`).join("");
-    // acciones
-    $("#playlist").querySelectorAll("[data-play]").forEach(b=>{
-      b.onclick = ()=>{ currentId = b.dataset.play; player.loadVideoById({videoId:currentId}); setTimeout(()=>player.setPlaybackQuality('highres'), 800); renderThumbs(); };
-    });
-    $("#playlist").querySelectorAll("[data-del]").forEach(b=>{
-      b.onclick = ()=>{ const id=b.dataset.del; const a=loadList().filter(x=>x!==id); saveList(a); renderList(); };
-    });
-  }
-  renderList();
-
-  $("#addToList").onclick = ()=>{
-    if(!currentId) return alert("Carga un video primero.");
-    const a = loadList(); if(!a.includes(currentId)) a.unshift(currentId);
-    saveList(a); renderList();
-  };
-  $("#clearList").onclick = ()=>{
-    if(confirm("¿Vaciar playlist local?")){ saveList([]); renderList(); }
-  };
+  const content = await zip.generateAsync({type:"blob"});
+  saveAs(content, "imagenes.zip");
+}
 </script>
 </body>
 </html>
