@@ -1,70 +1,212 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Analizador de Links</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 20px; background: #0f172a; color: #f1f5f9; }
-  h1 { color: #38bdf8; }
-  input, button { padding: 10px; border-radius: 8px; border: none; }
-  input { width: 60%; }
-  button { background: #38bdf8; color: black; cursor: pointer; margin-left: 5px; }
-  .card { background: #1e293b; padding: 15px; border-radius: 12px; margin-top: 20px; }
-  .pill { display:inline-block; padding:4px 10px; border-radius:8px; background:#0b1222; margin:2px; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mini Paint</title>
+  <style>
+    :root{
+      --bg:#0f1220; --panel:#151a2e; --stroke:#232a4a; --text:#e8eafc; --muted:#a9acc7; --brand:#7c3aed;
+      --light:#f6f7fb; --panel-light:#ffffff; --stroke-light:#e7e9f5; --text-light:#0d1020; --muted-light:#55607a;
+    }
+    html{height:100%}
+    body{margin:0; min-height:100%; font-family:Inter,system-ui,Segoe UI,Roboto,Ubuntu,Arial,sans-serif; background:var(--light); color:var(--text-light);}
+    .app{display:grid; grid-template-rows:auto 1fr auto; height:100vh}
+    header{position:sticky; top:0; z-index:10; backdrop-filter:saturate(180%) blur(10px); background:rgba(255,255,255,.75); border-bottom:1px solid var(--stroke-light)}
+    .toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:10px 14px; max-width:1200px; margin:auto}
+    .group{display:flex; gap:8px; align-items:center; padding:8px; border:1px solid var(--stroke-light); border-radius:12px; background:var(--panel-light)}
+    .btn{display:inline-grid; place-items:center; min-width:36px; height:36px; padding:0 10px; border:1px solid var(--stroke-light); border-radius:10px; background:#fff; cursor:pointer; font-weight:600}
+    .btn[data-active="true"]{outline:2px solid var(--brand)}
+    .btn:active{transform:translateY(1px)}
+    .color{width:36px; height:36px; border-radius:10px; overflow:hidden; border:1px solid var(--stroke-light)}
+    input[type="color"]{width:100%; height:100%; border:0; padding:0; background:none}
+    input[type="range"]{accent-color:var(--brand)}
+    .canvas-wrap{display:grid; place-items:center; padding:12px}
+    canvas{background:#fff; border:1px solid var(--stroke-light); border-radius:14px; box-shadow:0 22px 60px -28px rgba(16,24,40,.25); touch-action:none}
+    footer{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 14px; border-top:1px solid var(--stroke-light); background:#fff}
+    .status{font:600 12px/1.4 system-ui; color:var(--muted-light)}
+    .spacer{flex:1}
+    .hidden{display:none}
+    .kbd{font:600 12px/1 monospace; padding:.2rem .45rem; border:1px solid var(--stroke-light); border-radius:6px; background:#fff}
+    .row{display:flex; gap:8px; align-items:center}
+    .toolname{min-width:120px}
+    /* Lightbox style text input */
+    #textLayer{position:absolute; inset:0; pointer-events:none}
+    #textInput{position:absolute; border:1px dashed var(--brand); padding:4px 6px; border-radius:6px; background:#fff; font:600 16px/1.3 Inter,system-ui; color:#111; pointer-events:auto}
+    @media (max-width:720px){ .toolname{display:none} .group{gap:6px} .btn{min-width:34px; height:34px} }
+  </style>
 </head>
 <body>
-  <h1>🔗 Analizador de Links</h1>
-  <p>Pega cualquier enlace y obtén detalles (dominio, ruta, parámetros, QR).</p>
-  <input id="url" type="text" placeholder="https://ejemplo.com/page?x=1&y=2">
-  <button onclick="analizar()">Analizar</button>
+  <div class="app">
+    <header>
+      <div class="toolbar">
+        <div class="row toolname"><strong>Mini Paint</strong></div>
+        <div class="group" id="tools">
+          <button class="btn" data-tool="pencil" title="Lápiz (P)">✏️</button>
+          <button class="btn" data-tool="eraser" title="Borrador (E)">🩹</button>
+          <button class="btn" data-tool="line" title="Línea (L)">／</button>
+          <button class="btn" data-tool="rect" title="Rectángulo (R)">▭</button>
+          <button class="btn" data-tool="circle" title="Círculo (C)">◯</button>
+          <button class="btn" data-tool="fill" title="Relleno (F)">🪣</button>
+          <button class="btn" data-tool="text" title="Texto (T)">🔤</button>
+        </div>
+        <div class="group">
+          <div class="color"><input type="color" id="color" value="#111827" title="Color"/></div>
+          <label class="row" title="Tamaño de pincel">
+            <span style="font:600 12px system-ui; color:#6b7280">px</span>
+            <input type="range" id="size" min="1" max="60" value="8"/>
+          </label>
+        </div>
+        <div class="group">
+          <button class="btn" id="undo" title="Deshacer (Ctrl+Z)">↶</button>
+          <button class="btn" id="redo" title="Rehacer (Ctrl+Y)">↷</button>
+          <button class="btn" id="clear" title="Limpiar (Ctrl+K)">🧹</button>
+          <button class="btn" id="download" title="Descargar PNG (Ctrl+S)">⬇️</button>
+        </div>
+        <div class="spacer"></div>
+      </div>
+    </header>
 
-  <div id="result" class="card" style="display:none"></div>
+    <div class="canvas-wrap">
+      <div style="position:relative">
+        <canvas id="canvas" width="1080" height="640"></canvas>
+        <canvas id="overlay" width="1080" height="640" class="hidden"></canvas>
+        <div id="textLayer" class="hidden"><textarea id="textInput" rows="1"></textarea></div>
+      </div>
+    </div>
 
-  <div id="qr" class="card" style="display:none">
-    <h2>📱 Código QR del link</h2>
-    <canvas id="qrcanvas"></canvas>
+    <footer>
+      <div class="status" id="status">Listo</div>
+      <div class="row" style="flex-wrap:wrap; gap:6px">
+        <span class="kbd">P</span> lápiz · <span class="kbd">E</span> borrador · <span class="kbd">L</span> línea · <span class="kbd">R</span> rect · <span class="kbd">C</span> círculo · <span class="kbd">F</span> relleno · <span class="kbd">T</span> texto · <span class="kbd">Ctrl+Z/Y</span> undo/redo · <span class="kbd">Ctrl+S</span> PNG
+      </div>
+    </footer>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-<script>
-function analizar() {
-  const input = document.getElementById("url").value.trim();
-  if (!input) return alert("Ingresa un enlace válido.");
-  let u;
-  try {
-    u = new URL(input);
-  } catch(e) {
-    return alert("URL no válida.");
-  }
+  <script>
+    // Helpers
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 
-  let html = `<h2>Detalles del enlace</h2>`;
-  html += `<p><b>Protocolo:</b> ${u.protocol}</p>`;
-  html += `<p><b>Dominio:</b> ${u.hostname}</p>`;
-  html += `<p><b>Ruta:</b> ${u.pathname}</p>`;
+    const canvas = $('#canvas');
+    const ctx = canvas.getContext('2d');
+    const overlay = $('#overlay');
+    const octx = overlay.getContext('2d');
+    const textLayer = $('#textLayer');
+    const textInput = $('#textInput');
 
-  if (u.searchParams.toString()) {
-    html += `<p><b>Parámetros:</b></p><div>`;
-    for (const [k,v] of u.searchParams.entries()) {
-      html += `<span class="pill">${k} = ${v}</span>`;
+    const colorEl = $('#color');
+    const sizeEl = $('#size');
+    const statusEl = $('#status');
+
+    // State
+    let tool = 'pencil';
+    let drawing = false;
+    let last = null;
+    let start = null;
+    let history = []; // undo stack (images)
+    let redoStack = [];
+
+    function setStatus(msg){ statusEl.textContent = msg; }
+    function pushHistory(){
+      redoStack = [];
+      history.push(canvas.toDataURL());
+      if(history.length>40) history.shift();
     }
-    html += `</div>`;
-  } else {
-    html += `<p><b>Parámetros:</b> ninguno</p>`;
-  }
+    function restoreFrom(url){
+      const img = new Image(); img.onload = ()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0); }; img.src=url;
+    }
 
-  html += `<p><a href="${u.href}" target="_blank" style="color:#38bdf8">Abrir enlace</a></p>`;
+    // Init background white
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    pushHistory();
 
-  document.getElementById("result").innerHTML = html;
-  document.getElementById("result").style.display = "block";
+    // Tool buttons UI
+    const tools = $('#tools');
+    function activate(t){ tool = t; $$(".btn[data-tool]").forEach(b=>b.dataset.active = (b.dataset.tool===t)); setStatus('Herramienta: '+t); if(['line','rect','circle'].includes(t)){ overlay.classList.remove('hidden'); } else { overlay.classList.add('hidden'); octx.clearRect(0,0,overlay.width,overlay.height);} if(t!== 'text'){ hideTextBox(); } }
+    tools.addEventListener('click', e=>{ const b=e.target.closest('button[data-tool]'); if(!b) return; activate(b.dataset.tool); });
+    activate('pencil');
 
-  // Generar QR
-  document.getElementById("qr").style.display = "block";
-  QRCode.toCanvas(document.getElementById("qrcanvas"), u.href, { width: 200 }, function (error) {
-    if (error) console.error(error);
-  });
-}
-</script>
+    // Pointer pos
+    function getPos(e){
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.touches? e.touches[0].clientX : e.clientX) - rect.left;
+      const y = (e.touches? e.touches[0].clientY : e.clientY) - rect.top;
+      return {x: Math.round(x * (canvas.width/rect.width)), y: Math.round(y * (canvas.height/rect.height))};
+    }
+
+    // Drawing logic
+    function begin(e){ e.preventDefault(); drawing=true; const p=getPos(e); last=p; start=p; if(tool==='fill'){ floodFill(p.x, p.y, hexToRgba(colorEl.value)); drawing=false; pushHistory(); }
+      else if(tool==='text'){ showTextBox(p.x, p.y); drawing=false; }
+      else if(['line','rect','circle'].includes(tool)){ octx.clearRect(0,0,overlay.width,overlay.height);} 
+      else { drawDot(p); }
+    }
+    function move(e){ if(!drawing) return; const p=getPos(e); if(tool==='pencil' || tool==='eraser'){ drawLine(last,p); last=p; } else if(['line','rect','circle'].includes(tool)){ previewShape(p); } }
+    function end(){ if(!drawing) return; drawing=false; if(['line','rect','circle'].includes(tool)){ commitPreview(); } pushHistory(); }
+
+    function drawDot(p){ ctx.beginPath(); ctx.arc(p.x, p.y, sizeEl.value/2, 0, Math.PI*2); ctx.fillStyle = (tool==='eraser'? '#ffffff' : colorEl.value); ctx.fill(); }
+    function drawLine(a,b){ ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=sizeEl.value; ctx.strokeStyle=(tool==='eraser'? '#ffffff' : colorEl.value); ctx.stroke(); }
+
+    function previewShape(p){ octx.clearRect(0,0,overlay.width,overlay.height); octx.lineWidth=sizeEl.value; octx.strokeStyle=colorEl.value; octx.fillStyle=colorEl.value; const w=p.x-start.x, h=p.y-start.y; if(tool==='line'){ octx.beginPath(); octx.moveTo(start.x,start.y); octx.lineTo(p.x,p.y); octx.stroke(); } else if(tool==='rect'){ octx.strokeRect(start.x,start.y,w,h); } else if(tool==='circle'){ const r=Math.hypot(w,h); octx.beginPath(); octx.arc(start.x,start.y,r,0,Math.PI*2); octx.stroke(); } }
+    function commitPreview(){ ctx.drawImage(overlay,0,0); octx.clearRect(0,0,overlay.width,overlay.height); }
+
+    // Text tool
+    function showTextBox(x,y){ textLayer.classList.remove('hidden'); const m=8; textInput.style.left=(x+m)+'px'; textInput.style.top=(y+m)+'px'; textInput.value=''; textInput.style.minWidth='120px'; textInput.focus(); }
+    function hideTextBox(){ textLayer.classList.add('hidden'); }
+    textInput.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); drawText(); }
+      if(e.key==='Escape'){ hideTextBox(); }
+    });
+    function drawText(){ const rect = canvas.getBoundingClientRect(); const scaleX = canvas.width/rect.width; const scaleY = canvas.height/rect.height; const x = parseInt(textInput.style.left) * scaleX; const y = parseInt(textInput.style.top) * scaleY + 14; ctx.save(); ctx.fillStyle=colorEl.value; ctx.font = `600 ${Math.max(14, parseInt(sizeEl.value)*2)}px Inter, system-ui`;
+      const lines = textInput.value.split('\n'); lines.forEach((ln,i)=> ctx.fillText(ln, x, y + i*(parseInt(sizeEl.value)*2+6)) ); ctx.restore(); hideTextBox(); pushHistory(); }
+
+    // Events
+    ['mousedown','touchstart'].forEach(ev=> canvas.addEventListener(ev, begin, {passive:false}));
+    ['mousemove','touchmove'].forEach(ev=> canvas.addEventListener(ev, move, {passive:false}));
+    ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev=> canvas.addEventListener(ev, end));
+
+    // Undo/Redo/Clear/Download
+    $('#undo').addEventListener('click', ()=>{ if(history.length>1){ const cur=history.pop(); redoStack.push(cur); restoreFrom(history[history.length-1]); }});
+    $('#redo').addEventListener('click', ()=>{ const url=redoStack.pop(); if(url){ history.push(url); restoreFrom(url); }});
+    $('#clear').addEventListener('click', ()=>{ ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height); pushHistory(); });
+    $('#download').addEventListener('click', ()=>{ const a=document.createElement('a'); a.download='mini-paint.png'; a.href=canvas.toDataURL('image/png'); a.click(); });
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', (e)=>{
+      const k=e.key.toLowerCase();
+      if(e.ctrlKey && k==='z'){ e.preventDefault(); $('#undo').click(); }
+      else if(e.ctrlKey && k==='y'){ e.preventDefault(); $('#redo').click(); }
+      else if(e.ctrlKey && k==='s'){ e.preventDefault(); $('#download').click(); }
+      else if(e.ctrlKey && k==='k'){ e.preventDefault(); $('#clear').click(); }
+      else if(k==='p') activate('pencil');
+      else if(k==='e') activate('eraser');
+      else if(k==='l') activate('line');
+      else if(k==='r') activate('rect');
+      else if(k==='c') activate('circle');
+      else if(k==='f') activate('fill');
+      else if(k==='t') activate('text');
+    });
+
+    // Fill (flood fill) — simple 4-neighborhood
+    function hexToRgba(hex){ const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return m? [parseInt(m[1],16),parseInt(m[2],16),parseInt(m[3],16),255] : [0,0,0,255]; }
+    function match(px, target){ return px[0]===target[0] && px[1]===target[1] && px[2]===target[2] && px[3]===target[3]; }
+    function floodFill(sx,sy, fill){ const {width, height} = canvas; const img = ctx.getImageData(0,0,width,height); const data = img.data; const idx = (x,y)=> (y*width + x)*4; const start = data.slice(idx(sx,sy), idx(sx,sy)+4); if(match(fill,start)) return; const stack=[[sx,sy]]; while(stack.length){ const [x,y]=stack.pop(); let xL=x; let xR=x;
+        // move left
+        while(xL>=0 && match(data.slice(idx(xL,y), idx(xL,y)+4), start)) xL--;
+        // move right
+        while(xR<width && match(data.slice(idx(xR,y), idx(xR,y)+4), start)) xR++;
+        // fill span and queue neighbors
+        for(let i=xL+1;i<xR;i++){
+          const di = idx(i,y); data[di]=fill[0]; data[di+1]=fill[1]; data[di+2]=fill[2]; data[di+3]=fill[3];
+          if(y>0 && match(data.slice(idx(i,y-1), idx(i,y-1)+4), start)) stack.push([i,y-1]);
+          if(y<height-1 && match(data.slice(idx(i,y+1), idx(i,y+1)+4), start)) stack.push([i,y+1]);
+        }
+      }
+      ctx.putImageData(img,0,0);
+    }
+
+    // Ensure correct active state on load
+    activate('pencil');
+  </script>
 </body>
 </html>
