@@ -1,355 +1,143 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ultra Paint — Pro</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
   <style>
-    :root{
-      --bg:#0b0f1a; --panel:#0f1423; --card:#121a2e; --ink:#e8ecff; --muted:#a7afd1; --brand:#7c3aed; --brand2:#06b6d4; --ring:rgba(124,58,237,.35);
-      --stroke:#1f2a44; --ok:#10b981; --warn:#f59e0b; --err:#ef4444;
-      --checker1:#ffffff; --checker2:#e9eef8;
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-    html{height:100%;scroll-behavior:smooth}
-    body{margin:0; min-height:100%; font-family:Inter,system-ui,Segoe UI,Roboto,Ubuntu,Arial,sans-serif; background:linear-gradient(180deg,#f6f8ff,#eef2ff); color:#0e1325}
-    .app{display:grid; grid-template-rows:auto 1fr auto; height:100vh}
-
-    /* Topbar */
-    header{position:sticky; top:0; z-index:30; backdrop-filter:saturate(180%) blur(10px); background:rgba(255,255,255,.75); border-bottom:1px solid #e6eaf6}
-    .topbar{max-width:1280px; margin:auto; padding:10px 14px; display:flex; gap:10px; align-items:center}
-    .logo{display:grid; place-items:center; width:34px; height:34px; border-radius:10px; color:#fff; font-weight:900; background:linear-gradient(135deg,var(--brand),var(--brand2))}
-    .title{font-weight:900}
-
-    .group{display:flex; align-items:center; gap:8px; border:1px solid #e6eaf6; background:#fff; padding:8px; border-radius:12px}
-    .btn{display:inline-grid; place-items:center; min-width:36px; height:36px; padding:0 10px; border:1px solid #e6eaf6; border-radius:10px; background:#fff; cursor:pointer; font-weight:700}
-    .btn:active{transform:translateY(1px)}
-    .btn[data-active="true"]{outline:2px solid var(--brand)}
-    .btn[disabled]{opacity:.5; cursor:not-allowed}
-    .sel{height:36px; border:1px solid #e6eaf6; border-radius:10px; background:#fff; padding:0 8px}
-    input[type="range"],progress{accent-color:var(--brand)}
-
-    /* Workspace */
-    .workspace{display:grid; grid-template-columns:280px 1fr 280px; gap:12px; padding:12px; max-width:1400px; margin:auto; height:100%}
-    aside{display:flex; flex-direction:column; gap:12px}
-    .panel{background:#fff; border:1px solid #e6eaf6; border-radius:14px; padding:12px; box-shadow:0 24px 50px -30px rgba(16,24,40,.2)}
-    .panel h3{margin:0 0 8px; font-size:14px; color:#4b5563}
-
-    .canvas-wrap{position:relative; display:grid; place-items:center; overflow:hidden; border:1px dashed #dbe2f3; border-radius:16px; background:linear-gradient(180deg,#fefefe,#fafcff)}
-    .stage{position:relative; width:fit-content; height:fit-content; transform-origin:0 0}
-    .checker{position:absolute; inset:0; background-size:24px 24px; background-image:linear-gradient(45deg,var(--checker1) 25%,transparent 25%),linear-gradient(-45deg,var(--checker1) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--checker1) 75%),linear-gradient(-45deg,transparent 75%,var(--checker1) 75%); background-position:0 0,0 12px,12px -12px,-12px 0;}
-    canvas{display:block; background:transparent; border-radius:12px}
-    .grid{pointer-events:none; position:absolute; inset:0; background-size:40px 40px; background-image:linear-gradient(#0000 39px,#e6eaf6 1px),linear-gradient(90deg,#0000 39px,#e6eaf6 1px); opacity:.6}
-    .hidden{display:none}
-
-    footer{border-top:1px solid #e6eaf6; background:#fff; color:#6b7280}
-    .statusbar{max-width:1280px; margin:auto; padding:8px 14px; display:flex; gap:10px; align-items:center; justify-content:space-between}
-    .kbd{font:600 12px/1 monospace; border:1px solid #e6eaf6; border-radius:6px; padding:.2rem .45rem; background:#fff}
-
-    .swatches{display:grid; grid-template-columns:repeat(10, 24px); gap:6px}
-    .swatch{width:24px; height:24px; border-radius:6px; border:1px solid #e6eaf6; cursor:pointer}
-    .row{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
-    .col{display:grid; gap:6px}
-    .label{font:600 12px system-ui; color:#6b7280}
-    .stack{display:grid; gap:8px}
-    .layer{display:flex; align-items:center; justify-content:space-between; gap:8px; border:1px solid #e6eaf6; padding:6px 8px; border-radius:10px; background:#fff}
-    .layer[data-active="true"]{outline:2px solid var(--brand)}
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 320px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    input {
+      width: 75%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 8px 12px;
+      border: none;
+      background: #4caf50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 15px;
+    }
+    li {
+      background: #eee;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    li.completed {
+      text-decoration: line-through;
+      background: #d4edda;
+      color: #555;
+    }
+    .delete {
+      background: #e53935;
+      border: none;
+      padding: 5px 8px;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <div class="topbar">
-        <div class="logo">P</div>
-        <div class="title">Ultra Paint — Pro</div>
-        <div class="group" id="tools">
-          <button class="btn" data-tool="pencil" title="Lápiz (P)">✏️</button>
-          <button class="btn" data-tool="eraser" title="Borrador (E)">🩹</button>
-          <button class="btn" data-tool="line" title="Línea (L)">／</button>
-          <button class="btn" data-tool="rect" title="Rectángulo (R)">▭</button>
-          <button class="btn" data-tool="ellipse" title="Elipse/Círculo (C)">◯</button>
-          <button class="btn" data-tool="poly" title="Polígono (G)">⬠</button>
-          <button class="btn" data-tool="bucket" title="Relleno (F)">🪣</button>
-          <button class="btn" data-tool="dropper" title="Cuentagotas (I)">🎯</button>
-          <button class="btn" data-tool="text" title="Texto (T)">🔤</button>
-        </div>
-        <div class="group">
-          <button class="btn" id="undo" title="Deshacer (Ctrl+Z)">↶</button>
-          <button class="btn" id="redo" title="Rehacer (Ctrl+Y)">↷</button>
-          <button class="btn" id="clear" title="Limpiar (Ctrl+K)">🧹</button>
-          <button class="btn" id="downloadPng" title="PNG (Ctrl+S)">PNG</button>
-          <button class="btn" id="downloadJpg" title="JPG">JPG</button>
-        </div>
-        <div class="group">
-          <label class="row"><span class="label">Zoom</span><input type="range" id="zoom" min="25" max="400" value="100"/></label>
-          <label class="row"><span class="label">Tamaño</span><input type="range" id="size" min="1" max="64" value="8"/></label>
-          <label class="row"><span class="label">Opacidad</span><input type="range" id="alpha" min="5" max="100" value="100"/></label>
-        </div>
-      </div>
-    </header>
-
-    <div class="workspace">
-      <!-- Left panels -->
-      <aside>
-        <div class="panel">
-          <h3>Color</h3>
-          <div class="row">
-            <input type="color" id="colorA" value="#7c3aed" title="Color primario"/>
-            <input type="color" id="colorB" value="#06b6d4" title="Color secundario (gradiente)"/>
-            <select id="paintMode" class="sel" title="Modo de pintura">
-              <option value="solid">Sólido</option>
-              <option value="linear">Gradiente lineal</option>
-              <option value="radial">Gradiente radial</option>
-            </select>
-          </div>
-          <div class="swatches" id="swatches"></div>
-        </div>
-
-        <div class="panel">
-          <h3>Trazos</h3>
-          <div class="row"><label class="row"><input type="checkbox" id="strokeOn" checked/> <span>Contorno</span></label><label class="row"><input type="checkbox" id="fillOn" checked/> <span>Relleno</span></label></div>
-          <div class="row"><span class="label">Guiones</span><input type="checkbox" id="dashed"/></div>
-          <div class="row"><span class="label">Esquinas</span><select id="lineJoin" class="sel"><option>round</option><option>miter</option><option>bevel</option></select></div>
-          <div class="row"><span class="label">Extremos</span><select id="lineCap" class="sel"><option>round</option><option>butt</option><option>square</option></select></div>
-        </div>
-
-        <div class="panel">
-          <h3>Lienzo</h3>
-          <div class="row"><button class="btn" id="toggleGrid">Cuadrícula</button><button class="btn" id="checker">Fondo cuadriculado</button></div>
-          <div class="row"><span class="label">Ancho</span><input type="number" id="w" value="1080" class="sel" style="width:90px"><span class="label">Alto</span><input type="number" id="h" value="720" class="sel" style="width:90px"><button class="btn" id="resize">Redimensionar</button></div>
-          <div class="row"><input type="file" id="importImg" accept="image/*"/><button class="btn" id="insertImg">Insertar</button></div>
-        </div>
-      </aside>
-
-      <!-- Center canvas -->
-      <div class="panel canvas-wrap" id="canvasPanel">
-        <div class="stage" id="stage">
-          <div class="checker hidden" id="checkerBg"></div>
-          <canvas id="layer0" width="1080" height="720"></canvas>
-          <canvas id="layer1" width="1080" height="720"></canvas>
-          <canvas id="layer2" width="1080" height="720"></canvas>
-          <canvas id="overlay" width="1080" height="720"></canvas>
-          <div class="grid hidden" id="grid"></div>
-        </div>
-      </div>
-
-      <!-- Right panels -->
-      <aside>
-        <div class="panel">
-          <h3>Capas</h3>
-          <div class="stack" id="layers">
-            <div class="layer" data-layer="2"><span>Layer 3</span><div class="row"><button class="btn small" data-vis>👁️</button><button class="btn small" data-clear>🧹</button></div></div>
-            <div class="layer" data-layer="1"><span>Layer 2</span><div class="row"><button class="btn small" data-vis>👁️</button><button class="btn small" data-clear>🧹</button></div></div>
-            <div class="layer" data-layer="0" data-active="true"><span>Fondo</span><div class="row"><button class="btn small" data-vis>👁️</button><button class="btn small" data-clear>🧹</button></div></div>
-          </div>
-        </div>
-        <div class="panel">
-          <h3>Sesión</h3>
-          <div class="row"><button class="btn" id="saveSession">Guardar sesión</button><button class="btn" id="loadSession">Cargar</button></div>
-          <div class="row"><button class="btn" id="resetApp">Reiniciar</button></div>
-          <p class="label">Arrastra imágenes sobre el lienzo para importarlas.</p>
-        </div>
-      </aside>
-    </div>
-
-    <footer>
-      <div class="statusbar">
-        <div id="status">Listo</div>
-        <div class="row" style="flex-wrap:wrap;gap:6px">
-          <span class="kbd">P/E/L/R/C/G/F/I/T</span> herramientas · <span class="kbd">Espacio</span> pan · <span class="kbd">Ctrl+Rueda</span> zoom · <span class="kbd">Ctrl+Z/Y</span> undo/redo · <span class="kbd">Ctrl+S</span> PNG
-        </div>
-      </div>
-    </footer>
+  <div class="container">
+    <h1>📋 To-Do List</h1>
+    <input type="text" id="taskInput" placeholder="Escribe una tarea...">
+    <button onclick="addTask()">Agregar</button>
+    <ul id="taskList"></ul>
   </div>
 
   <script>
-    // ===== Helpers =====
-    const $ = (s, r=document)=> r.querySelector(s);
-    const $$ = (s, r=document)=> [...r.querySelectorAll(s)];
-    const clamp=(n,min,max)=> Math.max(min, Math.min(max,n));
-    const status=(msg)=> $('#status').textContent = msg;
+    const taskInput = document.getElementById("taskInput");
+    const taskList = document.getElementById("taskList");
 
-    // ===== Canvases / layers =====
-    const stage = $('#stage');
-    const overlay = $('#overlay');
-    const octx = overlay.getContext('2d');
-    const layers = [$('#layer0'), $('#layer1'), $('#layer2')];
-    const ctxs = layers.map(c=>c.getContext('2d'));
-    // Init white background on layer0
-    ctxs[0].fillStyle = '#fff'; ctxs[0].fillRect(0,0,layers[0].width,layers[0].height);
+    // cargar tareas guardadas
+    document.addEventListener("DOMContentLoaded", loadTasks);
 
-    let active = 0; // current layer index
-    function setActiveLayer(i){ active = i; $$('#layers .layer').forEach(el=> el.dataset.active = (parseInt(el.dataset.layer)===i)); status('Capa activa: '+(i+1)); }
-    setActiveLayer(0);
+    function addTask() {
+      const taskText = taskInput.value.trim();
+      if (taskText === "") return;
 
-    // ===== Viewport: zoom & pan =====
-    const zoomEl = $('#zoom');
-    let zoom = 1, panX=0, panY=0, panning=false, panStart=null;
-    function applyTransform(){ stage.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`; }
-    function setZoom(v){ zoom = clamp(v/100, .25, 4); zoomEl.value = Math.round(zoom*100); applyTransform(); status(`Zoom ${Math.round(zoom*100)}%`); }
-    setZoom(parseInt(zoomEl.value));
-    zoomEl.addEventListener('input', e=> setZoom(parseInt(e.target.value)));
-    // wheel zoom with Ctrl
-    stage.addEventListener('wheel', e=>{ if(!e.ctrlKey) return; e.preventDefault(); setZoom(Math.round(clamp(zoom*100 + (e.deltaY>0?-10:10),25,400))); }, {passive:false});
-    // panning with Space + drag
-    window.addEventListener('keydown', e=>{ if(e.code==='Space') panning = true; });
-    window.addEventListener('keyup', e=>{ if(e.code==='Space') panning = false; });
-    stage.addEventListener('mousedown', e=>{ if(panning){ panStart={x:e.clientX-panX, y:e.clientY-panY}; }});
-    window.addEventListener('mousemove', e=>{ if(panStart){ panX = e.clientX - panStart.x; panY = e.clientY - panStart.y; applyTransform(); }});
-    window.addEventListener('mouseup', ()=> panStart=null);
+      createTaskElement(taskText);
+      saveTask(taskText);
 
-    // ===== Tools & settings =====
-    const toolsBar = $('#tools');
-    let tool = 'pencil';
-    function setTool(t){ tool = t; $$('#tools .btn').forEach(b=> b.dataset.active = (b.dataset.tool===t)); status('Herramienta: '+t); if(['line','rect','ellipse','poly'].includes(t)){ overlay.classList.remove('hidden'); } else { overlay.classList.add('hidden'); octx.clearRect(0,0,overlay.width,overlay.height);} }
-    toolsBar.addEventListener('click', e=>{ const b=e.target.closest('button[data-tool]'); if(b) setTool(b.dataset.tool); }); setTool('pencil');
-
-    const colorA = $('#colorA');
-    const colorB = $('#colorB');
-    const paintMode = $('#paintMode');
-    const sizeEl = $('#size');
-    const alphaEl = $('#alpha');
-    const strokeOn = $('#strokeOn');
-    const fillOn = $('#fillOn');
-    const dashed = $('#dashed');
-    const lineJoin = $('#lineJoin');
-    const lineCap = $('#lineCap');
-
-    function makePaint(ctx){
-      ctx.globalAlpha = parseInt(alphaEl.value)/100;
-      let paint = colorA.value;
-      if(paintMode.value==='linear'){
-        const g = ctx.createLinearGradient(0,0,overlay.width,0); g.addColorStop(0,colorA.value); g.addColorStop(1,colorB.value); paint = g;
-      } else if(paintMode.value==='radial'){
-        const g = ctx.createRadialGradient(overlay.width/2,overlay.height/2,10, overlay.width/2,overlay.height/2, Math.max(overlay.width,overlay.height)/2);
-        g.addColorStop(0,colorA.value); g.addColorStop(1,colorB.value); paint = g;
-      }
-      return paint;
+      taskInput.value = "";
     }
 
-    // Swatches
-    const defaultSwatches = ['#111827','#ef4444','#f59e0b','#10b981','#06b6d4','#3b82f6','#7c3aed','#ec4899','#f3f4f6','#ffffff','#000000'];
-    const swc = $('#swatches');
-    defaultSwatches.forEach(c=>{ const d=document.createElement('button'); d.className='swatch'; d.style.background=c; d.title=c; d.addEventListener('click',()=> colorA.value=c); swc.appendChild(d); });
+    function createTaskElement(text, completed = false) {
+      const li = document.createElement("li");
+      if (completed) li.classList.add("completed");
 
-    // ===== Drawing mechanics =====
-    let drawing=false, last=null, start=null, polyPts=[];
+      li.textContent = text;
+      li.addEventListener("click", () => {
+        li.classList.toggle("completed");
+        updateLocalStorage();
+      });
 
-    function posFromEvent(e){
-      const rect = overlay.getBoundingClientRect();
-      const x = (e.touches? e.touches[0].clientX : e.clientX) - rect.left;
-      const y = (e.touches? e.touches[0].clientY : e.clientY) - rect.top;
-      return {x: Math.round(x * (overlay.width/rect.width)), y: Math.round(y * (overlay.height/rect.height))};
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "X";
+      deleteBtn.classList.add("delete");
+      deleteBtn.onclick = () => {
+        li.remove();
+        updateLocalStorage();
+      };
+
+      li.appendChild(deleteBtn);
+      taskList.appendChild(li);
     }
 
-    function begin(e){ if(panning) return; e.preventDefault(); const p=posFromEvent(e); drawing=true; last=p; start=p; if(tool==='bucket'){ floodFill(ctxs[active], p.x,p.y, hexToRgba(colorA.value)); commit(); drawing=false; }
-      else if(tool==='dropper'){ const c = pickColor(ctxs, p.x,p.y); if(c) colorA.value = c; drawing=false; status('Color tomado: '+colorA.value); }
-      else if(tool==='text'){ const t = prompt('Texto:'); if(t){ drawText(ctxs[active], t, p.x, p.y); commit(); } drawing=false; }
-      else if(tool==='poly'){ polyPts.push(p); preview(); }
-      else if(tool==='pencil' || tool==='eraser'){ drawDot(ctxs[active], p); }
-      else { preview(p); }
-    }
-    function move(e){ if(!drawing) return; const p=posFromEvent(e); if(tool==='pencil' || tool==='eraser'){ drawLine(ctxs[active], last,p); last=p; } else if(['line','rect','ellipse','poly'].includes(tool)){ preview(p); } }
-    function end(e){ if(!drawing) return; drawing=false; if(['line','rect','ellipse'].includes(tool)){ commit(); } }
-
-    function drawDot(ctx,p){ ctx.save(); setupCtx(ctx); ctx.beginPath(); ctx.arc(p.x,p.y, sizeEl.value/2, 0, Math.PI*2); ctx.fillStyle = (tool==='eraser'? '#ffffff' : makePaint(ctx)); ctx.fill(); ctx.restore(); }
-    function drawLine(ctx,a,b){ ctx.save(); setupCtx(ctx); ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.strokeStyle = (tool==='eraser'? '#ffffff' : makePaint(ctx)); ctx.stroke(); ctx.restore(); }
-
-    function setupCtx(ctx){ ctx.lineWidth = parseInt(sizeEl.value); ctx.lineJoin=lineJoin.value; ctx.lineCap=lineCap.value; ctx.setLineDash(dashed.checked? [ctx.lineWidth*2, ctx.lineWidth*1.2] : []); ctx.globalAlpha = parseInt(alphaEl.value)/100; }
-
-    function preview(p){ octx.clearRect(0,0,overlay.width,overlay.height); octx.save(); setupCtx(octx); octx.strokeStyle = makePaint(octx); octx.fillStyle = makePaint(octx); const w=(p?p.x:start.x)-start.x, h=(p?p.y:start.y)-start.y; if(tool==='line'){ octx.beginPath(); octx.moveTo(start.x,start.y); octx.lineTo(p.x,p.y); if(strokeOn.checked) octx.stroke(); }
-      else if(tool==='rect'){ if(fillOn.checked) octx.fillRect(start.x,start.y,w,h); if(strokeOn.checked) octx.strokeRect(start.x,start.y,w,h); }
-      else if(tool==='ellipse'){ octx.beginPath(); octx.ellipse(start.x + w/2, start.y + h/2, Math.abs(w/2), Math.abs(h/2), 0, 0, Math.PI*2); if(fillOn.checked) octx.fill(); if(strokeOn.checked) octx.stroke(); }
-      else if(tool==='poly'){ const pts=[...polyPts, p||start]; if(pts.length>1){ octx.beginPath(); octx.moveTo(pts[0].x, pts[0].y); for(let i=1;i<pts.length;i++) octx.lineTo(pts[i].x, pts[i].y); if(fillOn.checked && pts.length>2) { octx.closePath(); octx.fill(); } if(strokeOn.checked) octx.stroke(); }
-      }
-      octx.restore();
+    function saveTask(taskText) {
+      let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      tasks.push({ text: taskText, completed: false });
+      localStorage.setItem("tasks", JSON.stringify(tasks));
     }
 
-    function commit(){ // paint overlay to active layer
-      const ctx = ctxs[active]; ctx.save(); ctx.globalAlpha = 1; ctx.drawImage(overlay,0,0); ctx.restore(); octx.clearRect(0,0,overlay.width,overlay.height); pushHistory(); }
+    function updateLocalStorage() {
+      let tasks = [];
+      document.querySelectorAll("#taskList li").forEach(li => {
+        tasks.push({
+          text: li.firstChild.textContent,
+          completed: li.classList.contains("completed")
+        });
+      });
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
 
-    // Text
-    function drawText(ctx, text, x, y){ ctx.save(); setupCtx(ctx); ctx.fillStyle = makePaint(ctx); ctx.font = `600 ${Math.max(14, parseInt(sizeEl.value)*2)}px Inter, system-ui`; const lines = text.split('\n'); lines.forEach((ln,i)=> ctx.fillText(ln, x, y + i*(parseInt(sizeEl.value)*2+6)) ); ctx.restore(); }
-
-    // Eyedropper
-    function pickColor(ctxs, x,y){ for(let i=ctxs.length-1;i>=0;i--){ const d=ctxs[i].getImageData(x,y,1,1).data; if(d[3]>0){ const c = `#${[d[0],d[1],d[2]].map(v=> v.toString(16).padStart(2,'0')).join('')}`; return c; } } return null; }
-
-    // Flood fill
-    function hexToRgba(hex){ const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return m? [parseInt(m[1],16),parseInt(m[2],16),parseInt(m[3],16),255] : [0,0,0,255]; }
-    function match(px, target){ return px[0]===target[0] && px[1]===target[1] && px[2]===target[2] && px[3]===target[3]; }
-    function floodFill(ctx, sx,sy, fill){ const {width, height} = ctx.canvas; const img = ctx.getImageData(0,0,width,height); const data = img.data; const idx = (x,y)=> (y*width + x)*4; const start = data.slice(idx(sx,sy), idx(sx,sy)+4); if(match(fill,start)) return; const stack=[[sx,sy]]; while(stack.length){ const [x,y]=stack.pop(); let xL=x; let xR=x; while(xL>=0 && match(data.slice(idx(xL,y), idx(xL,y)+4), start)) xL--; while(xR<width && match(data.slice(idx(xR,y), idx(xR,y)+4), start)) xR++; for(let i=xL+1;i<xR;i++){ const di = idx(i,y); data[di]=fill[0]; data[di+1]=fill[1]; data[di+2]=fill[2]; data[di+3]=fill[3]; if(y>0 && match(data.slice(idx(i,y-1), idx(i,y-1)+4), start)) stack.push([i,y-1]); if(y<height-1 && match(data.slice(idx(i,y+1), idx(i,y+1)+4), start)) stack.push([i,y+1]); } }
-      ctx.putImageData(img,0,0); }
-
-    // History (per document composite)
-    let history=[]; let redo=[];
-    function snapshot(){ const off=document.createElement('canvas'); off.width=overlay.width; off.height=overlay.height; const ictx=off.getContext('2d'); ctxs.forEach(c=> ictx.drawImage(c,0,0)); return off.toDataURL(); }
-    function pushHistory(){ redo=[]; history.push(snapshot()); if(history.length>50) history.shift(); }
-    function restore(url){ const img=new Image(); img.onload = ()=>{ ctxs.forEach(c=> c.getContext('2d').clearRect(0,0,c.width,c.height)); // draw to base layer
-        ctxs[0].drawImage(img,0,0); }; img.src=url; }
-
-    // Controls
-    $('#undo').addEventListener('click', ()=>{ if(history.length>1){ const cur=history.pop(); redo.push(cur); restore(history[history.length-1]); status('Deshacer'); }});
-    $('#redo').addEventListener('click', ()=>{ const url=redo.pop(); if(url){ history.push(url); restore(url); status('Rehacer'); }});
-    $('#clear').addEventListener('click', ()=>{ ctxs[active].clearRect(0,0,overlay.width,overlay.height); if(active===0){ ctxs[0].fillStyle='#fff'; ctxs[0].fillRect(0,0,overlay.width,overlay.height);} pushHistory(); });
-
-    // Downloads
-    function download(type='png'){ const off=document.createElement('canvas'); off.width=overlay.width; off.height=overlay.height; const ictx=off.getContext('2d'); ctxs.forEach(c=> ictx.drawImage(c,0,0)); const a=document.createElement('a'); a.download = `ultra-paint.${type}`; a.href = off.toDataURL(type==='jpg'?'image/jpeg':'image/png'); a.click(); }
-    $('#downloadPng').addEventListener('click', ()=> download('png'));
-    $('#downloadJpg').addEventListener('click', ()=> download('jpg'));
-
-    // Grid & checker
-    const grid = $('#grid'); const checkerBg = $('#checkerBg');
-    $('#toggleGrid').addEventListener('click', ()=> grid.classList.toggle('hidden'));
-    $('#checker').addEventListener('click', ()=> checkerBg.classList.toggle('hidden'));
-
-    // Resize canvas
-    function resizeAll(w,h){ layers.concat([overlay]).forEach(c=>{ const tmp=document.createElement('canvas'); tmp.width=w; tmp.height=h; const tctx=tmp.getContext('2d'); tctx.drawImage(c,0,0); c.width=w; c.height=h; c.getContext('2d').drawImage(tmp,0,0); }); pushHistory(); }
-    $('#resize').addEventListener('click', ()=>{ const w=parseInt($('#w').value)||1080; const h=parseInt($('#h').value)||720; resizeAll(w,h); });
-
-    // Import image
-    let importImg=null; $('#importImg').addEventListener('change', e=>{ importImg = e.target.files[0]||null; });
-    $('#insertImg').addEventListener('click', ()=>{ if(!importImg) return; const img=new Image(); img.onload=()=>{ ctxs[active].drawImage(img,0,0); pushHistory(); }; img.src = URL.createObjectURL(importImg); });
-    // Drag & drop
-    stage.addEventListener('dragover', e=>{ e.preventDefault(); });
-    stage.addEventListener('drop', e=>{ e.preventDefault(); const file = e.dataTransfer.files?.[0]; if(!file) return; const img=new Image(); img.onload=()=>{ ctxs[active].drawImage(img,0,0); pushHistory(); }; img.src = URL.createObjectURL(file); });
-
-    // Layers UI
-    $('#layers').addEventListener('click', e=>{
-      const row = e.target.closest('.layer'); if(!row) return; const idx = parseInt(row.dataset.layer);
-      if(e.target.matches('[data-vis]')){ const cnv = layers[idx]; cnv.style.display = cnv.style.display==='none'? 'block':'none'; }
-      else if(e.target.matches('[data-clear]')){ const c=ctxs[idx]; c.clearRect(0,0,c.canvas.width,c.canvas.height); if(idx===0){ c.fillStyle='#fff'; c.fillRect(0,0,c.canvas.width,c.canvas.height); } pushHistory(); }
-      else { setActiveLayer(idx); }
-    });
-
-    // Session save/load
-    const SKEY='ultra-paint-session';
-    $('#saveSession').addEventListener('click', ()=>{ const data = { w: overlay.width, h: overlay.height, layers: ctxs.map(c=> c.canvas.toDataURL())}; localStorage.setItem(SKEY, JSON.stringify(data)); status('Sesión guardada ✓'); });
-    $('#loadSession').addEventListener('click', ()=>{ const raw = localStorage.getItem(SKEY); if(!raw) return alert('Sin sesión guardada'); const data = JSON.parse(raw); resizeAll(data.w, data.h); data.layers.forEach((url,i)=>{ const img=new Image(); img.onload=()=> ctxs[i].drawImage(img,0,0); img.src=url; }); pushHistory(); status('Sesión cargada'); });
-    $('#resetApp').addEventListener('click', ()=>{ if(confirm('¿Reiniciar lienzo?')){ ctxs.forEach(c=> c.clearRect(0,0,c.canvas.width,c.canvas.height)); ctxs[0].fillStyle='#fff'; ctxs[0].fillRect(0,0,overlay.width,overlay.height); history=[]; redo=[]; pushHistory(); }});
-
-    // Pointer events
-    ['mousedown','touchstart'].forEach(ev=> overlay.addEventListener(ev, begin, {passive:false}));
-    ['mousemove','touchmove'].forEach(ev=> overlay.addEventListener(ev, move, {passive:false}));
-    ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev=> overlay.addEventListener(ev, end));
-
-    // Keyboard shortcuts
-    window.addEventListener('keydown', (e)=>{
-      const k=e.key.toLowerCase();
-      if(e.ctrlKey && k==='z'){ e.preventDefault(); $('#undo').click(); }
-      else if(e.ctrlKey && (k==='y' || (k==='z' && e.shiftKey))){ e.preventDefault(); $('#redo').click(); }
-      else if(e.ctrlKey && k==='s'){ e.preventDefault(); $('#downloadPng').click(); }
-      else if(k==='p') setTool('pencil');
-      else if(k==='e') setTool('eraser');
-      else if(k==='l') setTool('line');
-      else if(k==='r') setTool('rect');
-      else if(k==='c') setTool('ellipse');
-      else if(k==='g') setTool('poly');
-      else if(k==='f') setTool('bucket');
-      else if(k==='i') setTool('dropper');
-      else if(k==='t') setTool('text');
-    });
-
-    // Init history
-    pushHistory();
+    function loadTasks() {
+      let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      tasks.forEach(t => createTaskElement(t.text, t.completed));
+    }
   </script>
 </body>
 </html>
