@@ -1,143 +1,401 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>To-Do List</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .container {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      width: 320px;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    input {
-      width: 75%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    button {
-      padding: 8px 12px;
-      border: none;
-      background: #4caf50;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #45a049;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 15px;
-    }
-    li {
-      background: #eee;
-      margin: 5px 0;
-      padding: 8px;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    li.completed {
-      text-decoration: line-through;
-      background: #d4edda;
-      color: #555;
-    }
-    .delete {
-      background: #e53935;
-      border: none;
-      padding: 5px 8px;
-      border-radius: 4px;
-      color: white;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Visor de Letras — Karaoke FX</title>
+<style>
+  :root{
+    --fg:#0f1226; --bg:#0b0f1a; --panel:#ffffff10; --accent:#7c5cff;
+    --fg-inv:#f5f7ff; --glow:0 0 30px #7c5cff80;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--fg-inv); background: radial-gradient(1200px 800px at 20% 20%, #1c1d37, #0b0f1a 60%) no-repeat fixed;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    overflow:hidden;
+  }
+  /* Partículas de fondo */
+  .stars{position:fixed; inset:0; pointer-events:none; background-image:
+    radial-gradient(2px 2px at 20% 30%, #ffffff60 30%, transparent 31%),
+    radial-gradient(2px 2px at 70% 60%, #ffffff50 30%, transparent 31%),
+    radial-gradient(1.5px 1.5px at 40% 80%, #ffffff40 30%, transparent 31%),
+    radial-gradient(1.5px 1.5px at 85% 20%, #ffffff45 30%, transparent 31%);
+    animation: twinkle 7s linear infinite;
+    opacity:.5; filter: blur(.2px);
+  }
+  @keyframes twinkle{50%{transform:translateY(-6px)}}
+
+  /* Contenedor principal */
+  .app{
+    position:relative; display:grid; grid-template-rows:auto 1fr auto; height:100%; gap:10px;
+    padding:16px; backdrop-filter: blur(2px);
+  }
+
+  /* Barra superior */
+  .topbar{
+    display:flex; gap:8px; align-items:center; justify-content:space-between;
+  }
+  .title{
+    display:flex; gap:10px; align-items:center; font-weight:700; letter-spacing:.3px;
+    text-shadow: var(--glow);
+  }
+  .title .logo{
+    width:28px; height:28px; border-radius:10px;
+    background: conic-gradient(from 210deg, #7c5cff, #34d399, #60a5fa, #7c5cff);
+    box-shadow: 0 0 18px #7c5cff70;
+  }
+
+  /* Panel letras */
+  .panel{
+    position:relative; overflow:hidden; border-radius:18px; background: var(--panel);
+    box-shadow: 0 10px 30px #00000050; border:1px solid #ffffff12;
+  }
+  .lyrics{
+    position:absolute; inset:0; overflow:auto; scroll-behavior:smooth; padding:32px;
+  }
+  .line{
+    font-size: clamp(18px, 3.5vw, 38px);
+    line-height:1.35; margin:18px 0; opacity:.6; transition: opacity .25s, transform .25s;
+    text-wrap: balance;
+  }
+  .line.active{opacity:1; transform:scale(1.02)}
+  .line .word{
+    display:inline-block; position:relative; padding-right:.15em;
+  }
+  .line .word .mask{
+    position:absolute; left:0; top:0; bottom:0; width:0%;
+    background: linear-gradient(90deg, #fff, #9aa4ff 70%); mix-blend-mode:screen; border-radius:3px;
+    opacity:.95; pointer-events:none;
+  }
+
+  /* Controles */
+  .controls{
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center;
+    background: #00000030; border:1px solid #ffffff14; border-radius:14px; padding:10px;
+    backdrop-filter: blur(6px);
+  }
+  button, .pill{
+    background:#1a1f3a; color:#e8ebff; border:1px solid #ffffff18; padding:10px 14px; border-radius:12px;
+    cursor:pointer; font-weight:600; letter-spacing:.2px;
+  }
+  button:hover{filter:brightness(1.1)}
+  .ghost{background:#13162b}
+  .accent{background:linear-gradient(120deg, #6a5bff, #13c4a3); border:none; box-shadow: var(--glow)}
+  .range{display:flex; align-items:center; gap:8px}
+  input[type="range"]{width:160px}
+  .kbd{padding:6px 10px; border-radius:8px; background:#0e1224; border:1px solid #ffffff14; color:#c9cffc; font-size:12px}
+  .right{margin-left:auto; display:flex; gap:8px}
+  .hint{opacity:.75; font-size:12px}
+
+  /* Modal de importar */
+  dialog{
+    border:none; border-radius:16px; padding:0; background:#0b1024; color:#e8ebff;
+    width:min(860px, 92dvw); box-shadow: 0 30px 80px #00000080; border:1px solid #ffffff18;
+  }
+  .modal-head{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid #ffffff18}
+  .modal-body{padding:16px}
+  textarea{width:100%; height:45vh; resize:vertical; border-radius:12px; background:#0e142e; color:#e8ebff; border:1px solid #ffffff18; padding:12px}
+  .modal-actions{display:flex; justify-content:flex-end; gap:10px; padding:14px 16px; border-top:1px solid #ffffff18}
+
+  /* Temas */
+  .theme-light{--fg:#1b1b2d; --bg:#f5f7ff; --panel:#00000008; --accent:#5a41ff; --fg-inv:#0c0f25}
+  .theme-light body{color:#0c0f25}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>📋 To-Do List</h1>
-    <input type="text" id="taskInput" placeholder="Escribe una tarea...">
-    <button onclick="addTask()">Agregar</button>
-    <ul id="taskList"></ul>
+<div class="stars"></div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="title"><div class="logo"></div> <span>Visor de Letras — <i>Karaoke FX</i></span></div>
+    <div class="right">
+      <button id="btnImport" class="ghost">📥 Importar letra</button>
+      <button id="btnTheme" class="ghost">🌗 Tema</button>
+      <button id="btnFull" class="ghost">⛶ Pantalla completa</button>
+    </div>
   </div>
 
-  <script>
-    const taskInput = document.getElementById("taskInput");
-    const taskList = document.getElementById("taskList");
+  <div class="panel">
+    <div id="lyrics" class="lyrics" tabindex="0" aria-label="Letras"></div>
+  </div>
 
-    // cargar tareas guardadas
-    document.addEventListener("DOMContentLoaded", loadTasks);
+  <div class="controls">
+    <button id="btnPrev">⏮️ Ant</button>
+    <button id="btnPlay" class="accent">▶️ Reproducir</button>
+    <button id="btnNext">⏭️ Sig</button>
 
-    function addTask() {
-      const taskText = taskInput.value.trim();
-      if (taskText === "") return;
+    <div class="range">
+      <span class="hint">Velocidad</span>
+      <input id="speed" type="range" min="0.6" max="2.0" step="0.1" value="1.0" />
+      <span id="speedVal" class="kbd">1.0×</span>
+    </div>
 
-      createTaskElement(taskText);
-      saveTask(taskText);
+    <div class="range">
+      <span class="hint">Palabra</span>
+      <input id="wpm" type="range" min="80" max="360" step="10" value="180" />
+      <span id="wpmVal" class="kbd">180 WPM</span>
+    </div>
 
-      taskInput.value = "";
+    <label class="pill"><input id="autoscroll" type="checkbox" checked /> Auto-scroll</label>
+    <label class="pill"><input id="loop" type="checkbox" checked /> Loop</label>
+    <span class="hint">Atajos: <span class="kbd">Espacio</span> Play/Pausa · <span class="kbd">↑/↓</span> Volumen (no audio) · <span class="kbd">←/→</span> Ant/Sig</span>
+  </div>
+</div>
+
+<!-- Modal importar -->
+<dialog id="dlg">
+  <div class="modal-head">
+    <strong>Importar / Pegar letra</strong>
+    <button id="dlgClose" class="ghost">✕</button>
+  </div>
+  <div class="modal-body">
+    <p>Pega una letra (una línea por verso). Se reemplazará la actual.</p>
+    <textarea id="ta"></textarea>
+  </div>
+  <div class="modal-actions">
+    <button id="dlgCancel" class="ghost">Cancelar</button>
+    <button id="dlgOk" class="accent">Usar esta letra</button>
+  </div>
+</dialog>
+
+<script>
+/* ========= 1) LETRA (la que tú me diste) ========= */
+const DEFAULT_LYRICS = `
+Y si te parece que yo estoy enamorado tuyo
+Eso es un invento, intuyo, no des crédito a murmullos
+Porque casi nunca llamo para decir que te amo
+Y más de una vez lo hice a un número equivocado
+Casi nunca nadie dice que yo estoy enamorado tuyo
+Raramente desespero por tenerte aquí a mi lado
+Y eso no significa que tenga un significado
+Si pensás que amor yo siento, por favor, no hagas pamento
+No comentes con tu gente sobre nuestro asunto
+Casi nunca nadie dice que yo estoy enamorado tuyo
+No te vistas, no te hagás la nunca vista
+Tengo en vista cantarte un "hasta la vista"
+No te vistas, no te hagás la nunca vista
+Tengo lista una canción que dice: "hasta la vista, señorita"
+Casi nunca veo la foto tuya en mi celular
+Sigue ahí por la pereza que me da apretar "borrar"
+No estoy tan obsesionado, vale como aclaración
+Si pensás que es por eso que yo canto esta canción
+Casi nunca nadie dice que yo estoy enamorado tuyo
+No te vistas, no te hagás la nunca vista
+Tengo en vista cantarte un "hasta la vista"
+No te vistas, no te hagás la nunca vista
+Tengo lista una canción que dice: "hasta la vista, señorita"
+Y si te parece que yo estoy enamorado tuyo
+Eso es un invento, intuyo, no des crédito a murmullos
+Porque casi nunca llamo para decir que te amo
+Y más de una vez lo hice a un número equivocado
+Casi nunca nadie dice que yo estoy enamorado tuyo
+No te vistas, no te hagás la nunca vista
+Tengo en vista cantarte un "hasta la vista"
+No te vistas, no te hagás la nunca vista
+Tengo lista una canción que dice: "hasta la vista, señorita"
+`.trim();
+
+/* ========= 2) Estado y helpers ========= */
+const elLyrics = document.getElementById('lyrics');
+const btnPlay = document.getElementById('btnPlay');
+const btnPrev = document.getElementById('btnPrev');
+const btnNext = document.getElementById('btnNext');
+const speed = document.getElementById('speed');
+const speedVal = document.getElementById('speedVal');
+const wpm = document.getElementById('wpm');
+const wpmVal = document.getElementById('wpmVal');
+const chkAuto = document.getElementById('autoscroll');
+const chkLoop = document.getElementById('loop');
+const btnImport = document.getElementById('btnImport');
+const btnTheme = document.getElementById('btnTheme');
+const btnFull = document.getElementById('btnFull');
+
+const dlg = document.getElementById('dlg');
+const dlgClose = document.getElementById('dlgClose');
+const dlgCancel = document.getElementById('dlgCancel');
+const dlgOk = document.getElementById('dlgOk');
+const ta = document.getElementById('ta');
+
+let lines = [];
+let idx = 0;
+let playing = false;
+let raf = null;
+let wordTimer = null;
+
+/* ========= 3) Render de líneas con karaoke ========= */
+function loadLyrics(text){
+  lines = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  elLyrics.innerHTML = '';
+  lines.forEach((line, i) => {
+    const div = document.createElement('div');
+    div.className = 'line';
+    div.dataset.index = i;
+
+    // separar en palabras
+    const words = line.split(/(\s+)/); // conserva espacios
+    words.forEach(w => {
+      if (/\s+/.test(w)){
+        div.appendChild(document.createTextNode(w));
+      } else {
+        const span = document.createElement('span');
+        span.className = 'word';
+        span.textContent = w;
+        const mask = document.createElement('span');
+        mask.className = 'mask';
+        span.appendChild(mask);
+        div.appendChild(span);
+      }
+    });
+
+    elLyrics.appendChild(div);
+  });
+  idx = 0;
+  updateActive(true);
+}
+
+function updateActive(scroll){
+  document.querySelectorAll('.line').forEach(el => el.classList.remove('active'));
+  const current = elLyrics.querySelector(`.line[data-index="${idx}"]`);
+  if (current){
+    current.classList.add('active');
+    if (scroll && chkAuto.checked){
+      current.scrollIntoView({behavior:'smooth', block:'center'});
     }
+  }
+}
 
-    function createTaskElement(text, completed = false) {
-      const li = document.createElement("li");
-      if (completed) li.classList.add("completed");
+function clearWordMask(lineEl){
+  lineEl.querySelectorAll('.word .mask').forEach(m=>m.style.width='0%');
+}
 
-      li.textContent = text;
-      li.addEventListener("click", () => {
-        li.classList.toggle("completed");
-        updateLocalStorage();
-      });
+function animateLine(idxToAnimate){
+  const lineEl = elLyrics.querySelector(`.line[data-index="${idxToAnimate}"]`);
+  if (!lineEl) return;
 
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "X";
-      deleteBtn.classList.add("delete");
-      deleteBtn.onclick = () => {
-        li.remove();
-        updateLocalStorage();
-      };
+  clearWordMask(lineEl);
+  const words = [...lineEl.querySelectorAll('.word')];
+  if (words.length === 0) return;
 
-      li.appendChild(deleteBtn);
-      taskList.appendChild(li);
+  // Duración por número de palabras (WPM) y factor de velocidad
+  const baseWPM = parseFloat(wpm.value); // palabras por minuto
+  const spd = parseFloat(speed.value);   // multiplicador
+  const totalMs = Math.max(900, (words.length / baseWPM) * 60000 / spd);
+
+  // Animación progresiva de la máscara palabra a palabra
+  let i = 0;
+  const perWord = totalMs / words.length;
+
+  function step(){
+    if (i >= words.length) return;
+    const mask = words[i].querySelector('.mask');
+    let start = null;
+
+    function grow(ts){
+      if (!start) start = ts;
+      const p = Math.min(1, (ts - start) / perWord);
+      mask.style.width = (p*100) + '%';
+      if (p < 1){
+        raf = requestAnimationFrame(grow);
+      } else {
+        i++;
+        if (i < words.length){
+          start = null;
+          raf = requestAnimationFrame(grow);
+        }
+      }
     }
+    raf = requestAnimationFrame(grow);
+  }
 
-    function saveTask(taskText) {
-      let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-      tasks.push({ text: taskText, completed: false });
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-    }
+  step();
 
-    function updateLocalStorage() {
-      let tasks = [];
-      document.querySelectorAll("#taskList li").forEach(li => {
-        tasks.push({
-          text: li.firstChild.textContent,
-          completed: li.classList.contains("completed")
-        });
-      });
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-    }
+  // programar avance a la siguiente línea
+  clearTimeout(wordTimer);
+  wordTimer = setTimeout(()=>{
+    nextLine();
+  }, totalMs + 80);
+}
 
-    function loadTasks() {
-      let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-      tasks.forEach(t => createTaskElement(t.text, t.completed));
+/* ========= 4) Controles ========= */
+function play(){
+  if (playing) return;
+  playing = true;
+  btnPlay.textContent = '⏸️ Pausar';
+  updateActive(false);
+  animateLine(idx);
+}
+function pause(){
+  playing = false;
+  btnPlay.textContent = '▶️ Reproducir';
+  if (raf) cancelAnimationFrame(raf);
+  clearTimeout(wordTimer);
+}
+function togglePlay(){ playing ? pause() : play(); }
+
+function prevLine(){
+  pause();
+  idx = Math.max(0, idx - 1);
+  updateActive(true);
+}
+function nextLine(){
+  if (idx < lines.length - 1){
+    idx++;
+    updateActive(true);
+    if (playing) animateLine(idx);
+  } else {
+    if (chkLoop.checked){
+      idx = 0;
+      updateActive(true);
+      if (playing) animateLine(idx);
+    } else {
+      pause();
     }
-  </script>
+  }
+}
+
+/* ========= 5) Eventos UI ========= */
+btnPlay.addEventListener('click', togglePlay);
+btnPrev.addEventListener('click', prevLine);
+btnNext.addEventListener('click', ()=>{
+  pause(); nextLine();
+});
+speed.addEventListener('input', ()=>{
+  speedVal.textContent = `${parseFloat(speed.value).toFixed(1)}×`;
+});
+wpm.addEventListener('input', ()=>{
+  wpmVal.textContent = `${wpm.value} WPM`;
+});
+
+btnImport.addEventListener('click', ()=>{ ta.value = lines.join('\n'); dlg.showModal(); });
+dlgClose.addEventListener('click', ()=>dlg.close());
+dlgCancel.addEventListener('click', ()=>dlg.close());
+dlgOk.addEventListener('click', ()=>{
+  loadLyrics(ta.value);
+  dlg.close();
+});
+
+btnTheme.addEventListener('click', ()=>{
+  document.documentElement.classList.toggle('theme-light');
+});
+btnFull.addEventListener('click', ()=>{
+  const docEl = document.documentElement;
+  if (!document.fullscreenElement) docEl.requestFullscreen?.();
+  else document.exitFullscreen?.();
+});
+
+/* Atajos */
+window.addEventListener('keydown', (e)=>{
+  if (e.target.matches('textarea,input')) return;
+  if (e.code === 'Space'){ e.preventDefault(); togglePlay(); }
+  if (e.key === 'ArrowRight') nextLine();
+  if (e.key === 'ArrowLeft') prevLine();
+});
+
+/* ========= 6) Init ========= */
+loadLyrics(DEFAULT_LYRICS);
+updateActive(true);
+</script>
 </body>
 </html>
