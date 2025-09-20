@@ -1,100 +1,102 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1020" />
+  <meta name="theme-color" content="#0b0f17" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>MiniApps — Utilidades rápidas</title>
-  <meta name="description" content="Colección de miniapps 100% client‑side para GitHub Pages: QR, escáner, compresor de imágenes, creador de memes, Markdown preview y generador de contraseñas." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>MiniApps — Utilidades Web (rápidas y bonitas)</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/normalize.css@8.0.1/normalize.css">
   <style>
+    /* ======= Tema y colores (bonitos, alto contraste) ======= */
     :root{
-      --bg:#0b1020;--panel:#121a33;--muted:#94a3b8;--text:#e6edf6;--brand:#7c5cff;--brand-2:#00d1ff;--ok:#22c55e;--warn:#f59e0b;--err:#ef4444;
-      --shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.02)
+      --bg:#0b0f17;--surface:#0f172a;--card:#121a33;--text:#e6edf6;--muted:#9aa4b2;--border:rgba(255,255,255,.12);
+      --brand:#7c5cff;--brand2:#22d3ee;--ok:#22c55e;--warn:#f59e0b;--err:#ef4444;--radius:16px;
+      --shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.02);
+    }
+    [data-theme="light"]{
+      --bg:#f7fafc;--surface:#ffffff;--card:#ffffff;--text:#0f172a;--muted:#64748b;--border:rgba(15,23,42,.12);
+      --brand:#6366f1;--brand2:#06b6d4;--ok:#16a34a;--warn:#d97706;--err:#dc2626;--shadow:0 10px 30px rgba(2,6,23,.08), inset 0 1px 0 rgba(255,255,255,.9);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.12), transparent 60%),radial-gradient(900px 500px at 110% 10%, rgba(0,209,255,.12), transparent 60%), var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0);}
-    a{color:var(--brand-2);text-decoration:none}
-    header{position:sticky;top:0;z-index:5;backdrop-filter: blur(8px);background:linear-gradient(180deg, rgba(11,16,32,.9), rgba(11,16,32,.6));border-bottom:1px solid rgba(255,255,255,.06)}
-    .wrap{max-width:1100px;margin:0 auto;padding:18px}
-    h1{font-size:clamp(24px,2.5vw,34px);margin:0;font-weight:800;letter-spacing:.2px}
-    .sub{color:var(--muted);margin-top:6px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:18px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;box-shadow:var(--shadow);transition:transform .15s ease, border .2s}
-    .card:hover{transform:translateY(-2px);border-color:rgba(124,92,255,.45)}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:
+      radial-gradient(900px 500px at 0% -10%, color-mix(in oklab, var(--brand) 25%, transparent) , transparent 60%),
+      radial-gradient(700px 400px at 110% 0%, color-mix(in oklab, var(--brand2) 25%, transparent), transparent 60%), var(--bg);
+      color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    a{color:var(--brand2);text-decoration:none}
+
+    header{position:sticky;top:0;z-index:10;backdrop-filter: blur(10px);background:linear-gradient(180deg, rgba(11,15,23,.92), rgba(11,15,23,.7));border-bottom:1px solid var(--border)}
+    .wrap{max-width:1100px;margin:0 auto;padding:16px}
+    h1{font-size:clamp(22px,2.4vw,34px);margin:0;font-weight:800;letter-spacing:.2px}
+    .sub{color:var(--muted);margin-top:4px}
+
+    nav{display:flex;gap:10px;overflow-x:auto;padding:12px 0 6px;scrollbar-width:thin}
+    nav::-webkit-scrollbar{height:6px}
+    nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:999px}
+
+    .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);padding:12px 14px;border-radius:12px;cursor:pointer;background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));min-height:44px}
+
+    main{max-width:1100px;margin:0 auto;padding:18px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));background-color:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:var(--shadow);transition:transform .15s ease, border .2s;cursor:pointer}
+    .card:hover{transform:translateY(-2px);border-color:color-mix(in oklab, var(--brand) 45%, transparent)}
     .card h3{margin:.2rem 0 .6rem;font-size:18px}
     .card p{margin:0;color:var(--muted);font-size:14px}
-    .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.12);padding:12px 14px;border-radius:12px;cursor:pointer;background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));min-height:44px}
-    .pill svg{opacity:.85}
-    nav{display:flex;flex-wrap:nowrap;gap:10px;margin-top:14px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
-    nav::-webkit-scrollbar{height:6px}
-    nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:999px}
-    main{max-width:1100px;margin:0 auto;padding:18px}
-    section.tool{display:none;background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+
+    section.tool{display:none;background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:var(--shadow);margin-top:18px}
     section.tool.active{display:block}
-    .tool header{position:static;background:none;border:0;padding:0}
     .tool h2{margin:.4rem 0 1rem;font-size:22px}
+
     .row{display:flex;flex-wrap:wrap;gap:16px}
     .col{flex:1 1 320px}
-    .panel{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
-    input,textarea,select,button{width:100%;padding:14px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#0d1429;color:var(--text);outline:none;min-height:44px}
-    textarea{min-height:140px;resize:vertical}
-    button{background:linear-gradient(135deg, var(--brand), var(--brand-2));border:0;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(124,92,255,.3);transition:transform .1s ease;min-height:48px}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
+    label{display:block;margin:6px 0 8px;color:var(--muted);font-size:14px}
+
+    input,textarea,select,button{width:100%;padding:14px;border-radius:12px;border:1px solid var(--border);background:color-mix(in oklab, var(--surface) 92%, black 8%);color:var(--text);outline:none;min-height:44px}
+    textarea{min-height:130px;resize:vertical}
+    button{background:linear-gradient(135deg, var(--brand), var(--brand2));border:0;font-weight:700;cursor:pointer;box-shadow:0 8px 20px color-mix(in oklab, var(--brand) 30%, black 70%);transition:transform .1s ease;min-height:48px}
     button:hover{transform:translateY(-1px)}
-    .muted{color:var(--muted)}
-    .canvasWrap{background:#0b0f1f;border:1px dashed rgba(255,255,255,.18);border-radius:14px;padding:12px;display:grid;place-items:center;min-height:260px}
-    canvas, video{max-width:100%;border-radius:12px}
-    .out{padding:12px;border-radius:12px;background:#0d1429;border:1px solid rgba(255,255,255,.12);min-height:44px;word-break:break-word}
+
+    .canvasWrap{background:#0b0f1f;border:1px dashed rgba(255,255,255,.18);border-radius:14px;padding:12px;display:grid;place-items:center;min-height:240px}
+    canvas,video{max-width:100%;border-radius:12px}
+    .out{padding:12px;border-radius:12px;background:#0d1429;border:1px solid var(--border);min-height:44px;word-break:break-word}
     .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    .chip{padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);cursor:pointer}
-    .badge{display:inline-block;padding:4px 8px;border-radius:8px;font-size:12px;border:1px solid rgba(255,255,255,.18)}
-    footer{max-width:1100px;margin:30px auto calc(60px + env(safe-area-inset-bottom));padding:0 18px;color:var(--muted)}
+    .badge{display:inline-block;padding:4px 8px;border-radius:8px;font-size:12px;border:1px solid var(--border);color:var(--muted)}
     .hint{font-size:12px;color:var(--muted)}
-    .rangeRow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
-    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;background:#0d1429;border:1px solid rgba(255,255,255,.12);padding:2px 6px;border-radius:6px;font-size:12px}
-    /* Móvil: optimizaciones */
-    @media (max-width: 640px){
+
+    footer{max-width:1100px;margin:30px auto calc(60px + env(safe-area-inset-bottom));padding:0 18px;color:var(--muted)}
+
+    /* Responsivo */
+    @media (max-width:640px){
       .grid{grid-template-columns:1fr;gap:12px}
-      .wrap{padding:14px}
+      .wrap{padding:12px 14px}
       .row{gap:12px}
       .card{padding:14px}
-      .panel{padding:10px}
+      .panel{padding:12px}
       h1{font-size:24px}
       .tool h2{font-size:20px}
     }
-
     /* Accesibilidad */
-    @media (prefers-reduced-motion: reduce){
-      *{scroll-behavior:auto}
-      button, .card{transition:none}
-    }
+    @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} button,.card{transition:none} }
+    @media (prefers-color-scheme: light){ :root:not([data-theme]){ color-scheme: light } }
+    @media (prefers-color-scheme: dark){ :root:not([data-theme]){ color-scheme: dark } }
   </style>
-  <!-- Libs via CDN (cargar solo cuando se usan) -->
-  <script defer src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/marked@13.0.0/marked.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 </head>
 <body>
   <header>
     <div class="wrap">
       <h1>MiniApps ⚡ — 100% client‑side</h1>
-      <div class="sub">Todo funciona en el navegador. Súbelo tal cual a GitHub Pages (sin backend).</div>
+      <div class="sub">Herramientas útiles, look bonito, y full móvil. Súbelo tal cual a GitHub Pages.</div>
       <nav id="nav"></nav>
     </div>
   </header>
 
   <main>
-    <div class="grid" id="appGrid">
-      <!-- Las tarjetas se generan con JS para mantener orden y DRY -->
-    </div>
+    <div class="grid" id="appGrid"></div>
 
-    <!-- Herramientas -->
+    <!-- Generador de QR -->
     <section class="tool" id="qrGen">
       <h2>Generador de QR</h2>
       <div class="row">
@@ -105,30 +107,27 @@
             <div class="row" style="margin-top:10px">
               <div class="col">
                 <label>Tamaño</label>
-                <div class="rangeRow">
-                  <input type="range" id="qrSize" min="128" max="1024" step="64" value="320" />
-                  <span class="badge" id="qrSizeVal">320 px</span>
-                </div>
+                <input type="range" id="qrSize" min="128" max="1024" step="64" value="320" />
               </div>
               <div class="col">
                 <label>Margen</label>
-                <div class="rangeRow">
-                  <input type="range" id="qrMargin" min="0" max="12" step="1" value="2" />
-                  <span class="badge" id="qrMarginVal">2</span>
-                </div>
+                <input type="range" id="qrMargin" min="0" max="12" step="1" value="2" />
               </div>
             </div>
-            <button id="btnQR">Crear QR</button>
-            <p class="hint">Tip: puedes guardar la imagen con clic derecho o tocar y mantener.</p>
+            <div class="chips" style="margin-top:10px">
+              <button class="pill" id="btnQR">Crear QR</button>
+              <button class="pill" id="btnQRInvert">Invertir colores</button>
+              <button class="pill" id="btnQRDownload">Descargar PNG</button>
+            </div>
           </div>
         </div>
         <div class="col">
           <div class="canvasWrap"><canvas id="qrCanvas"></canvas></div>
-          <div class="chips"><button class="pill" id="btnQRDownload">Descargar PNG</button><button class="pill" id="btnQRInvert">Invertir colores</button></div>
         </div>
       </div>
     </section>
 
+    <!-- Escáner de QR -->
     <section class="tool" id="qrScan">
       <h2>Escáner de QR (cámara)</h2>
       <div class="row">
@@ -137,9 +136,9 @@
             <div class="chips">
               <button class="pill" id="btnStartCam">Encender cámara</button>
               <button class="pill" id="btnStopCam">Apagar</button>
-              <span class="badge">Privado: no se sube nada</span>
+              <span class="badge">Privado: nada se sube</span>
             </div>
-            <div class="hint" style="margin-top:8px">Si te pide permiso, acepta el acceso a la cámara.</div>
+            <div class="hint" style="margin-top:8px">Requiere HTTPS (GitHub Pages ya usa https) y permiso de cámara.</div>
             <div class="canvasWrap"><video id="vid" playsinline></video></div>
           </div>
         </div>
@@ -157,6 +156,7 @@
       <canvas id="qrHidden" style="display:none"></canvas>
     </section>
 
+    <!-- Compresor de imágenes -->
     <section class="tool" id="imgCompress">
       <h2>Compresor/Redimensionador de imágenes</h2>
       <div class="row">
@@ -174,7 +174,7 @@
               </div>
             </div>
             <button id="btnCompress">Comprimir</button>
-            <p class="hint">Todo ocurre en tu navegador, ideal para bajar peso antes de subir a redes.</p>
+            <p class="hint">Todo se hace en tu navegador para cuidar tu privacidad.</p>
           </div>
         </div>
         <div class="col">
@@ -184,6 +184,7 @@
       </div>
     </section>
 
+    <!-- Creador de Memes -->
     <section class="tool" id="memeMaker">
       <h2>Creador de Memes</h2>
       <div class="row">
@@ -196,7 +197,7 @@
             <input id="bottomText" placeholder="ABAJO" />
             <div class="row" style="margin-top:10px">
               <div class="col">
-                <label>Tamaño fuente</label>
+                <label>Tamaño de letra</label>
                 <input type="range" id="fontSize" min="18" max="120" value="48" />
               </div>
               <div class="col">
@@ -216,12 +217,17 @@
       </div>
     </section>
 
+    <!-- Markdown Preview -->
     <section class="tool" id="mdPreview">
       <h2>Markdown → HTML</h2>
       <div class="row">
         <div class="col">
           <div class="panel">
-            <textarea id="mdSrc" placeholder="# Título\n\n*Escribe Markdown y ve la vista previa a la derecha.*"></textarea>
+            <textarea id="mdSrc" placeholder="# Título
+
+*Escribe Markdown y ve la vista previa a la derecha.*
+
+**Tip:** pega tu README.md aquí."></textarea>
           </div>
         </div>
         <div class="col">
@@ -232,6 +238,7 @@
       </div>
     </section>
 
+    <!-- Password Generator -->
     <section class="tool" id="passGen">
       <h2>Generador de contraseñas</h2>
       <div class="row">
@@ -246,10 +253,10 @@
               <div class="col">
                 <label>Opciones</label>
                 <div class="chips">
-                  <label class="chip"><input type="checkbox" id="useUpper" checked /> Mayúsculas</label>
-                  <label class="chip"><input type="checkbox" id="useLower" checked /> Minúsculas</label>
-                  <label class="chip"><input type="checkbox" id="useNums" checked /> Números</label>
-                  <label class="chip"><input type="checkbox" id="useSyms" /> Símbolos</label>
+                  <label class="pill"><input type="checkbox" id="useUpper" checked /> Mayúsculas</label>
+                  <label class="pill"><input type="checkbox" id="useLower" checked /> Minúsculas</label>
+                  <label class="pill"><input type="checkbox" id="useNums" checked /> Números</label>
+                  <label class="pill"><input type="checkbox" id="useSyms" /> Símbolos</label>
                 </div>
               </div>
             </div>
@@ -272,37 +279,54 @@
   </main>
 
   <footer>
-    Hecho con ❤️ para GitHub Pages. Código bajo MIT. Sugerencias: abre un Issue.
+    Hecho con ❤️ para GitHub Pages. Diseño limpio, responsivo y con tema claro/oscuro. Código MIT.
   </footer>
 
+  <!-- Libs -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@13.0.0/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+
   <script>
-    // --- Router mínimo (hash) para mostrar secciones ---
+    // ===== Router mínimo y tarjetas =====
     const tools = [
-      { id:'qrGen',  title:'Generador QR',            desc:'Crea códigos QR en PNG con tamaño y margen.' },
-      { id:'qrScan', title:'Escáner QR (cámara)',     desc:'Lee códigos QR con tu cámara, sin subir datos.' },
-      { id:'imgCompress', title:'Compresor de imágenes', desc:'Reduce peso y tamaño en tu navegador.' },
-      { id:'memeMaker', title:'Creador de Memes',     desc:'Añade texto arriba/abajo y descarga PNG.' },
+      { id:'qrGen',  title:'Generador QR',            desc:'Crea códigos QR con tamaño/margen.' },
+      { id:'qrScan', title:'Escáner QR (cámara)',     desc:'Lee QR con tu cámara, privado.' },
+      { id:'imgCompress', title:'Compresor de imágenes', desc:'Reduce peso antes de subir a redes.' },
+      { id:'memeMaker', title:'Creador de Memes',     desc:'Texto arriba/abajo y descarga PNG.' },
       { id:'mdPreview', title:'Markdown → HTML',      desc:'Escribe Markdown y obtén vista previa.' },
-      { id:'passGen', title:'Contraseñas seguras',    desc:'Genera y copia passwords con buena entropía.' },
-    ]
+      { id:'passGen', title:'Contraseñas seguras',    desc:'Genera y copia passwords fuertes.' },
+    ];
 
     const grid = document.getElementById('appGrid');
     const nav = document.getElementById('nav');
 
-    // Render tarjetas
+    // Tema (claro/oscuro) con persistencia
+    const savedTheme = localStorage.getItem('theme');
+    if(savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+    const themeBtn = document.createElement('button');
+    themeBtn.className = 'pill';
+    themeBtn.id = 'themeToggle';
+    nav.appendChild(themeBtn);
+    function updateThemeBtn(){ const t = document.documentElement.getAttribute('data-theme') || 'dark'; themeBtn.textContent = t==='light' ? '🌞 Modo claro' : '🌙 Modo oscuro'; }
+    function setTheme(t){ document.documentElement.setAttribute('data-theme', t); localStorage.setItem('theme', t); updateThemeBtn(); }
+    themeBtn.addEventListener('click', ()=>{ const t = document.documentElement.getAttribute('data-theme')||'dark'; setTheme(t==='light'?'dark':'light'); });
+    updateThemeBtn();
+
+    // Render tarjetas + botones de nav
     tools.forEach(t => {
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `<h3>${t.title}</h3><p>${t.desc}</p><div style="margin-top:12px"><span class="pill">Abrir</span></div>`
-      card.addEventListener('click', () => openTool(t.id))
-      grid.appendChild(card)
+      card.innerHTML = `<h3>${t.title}</h3><p>${t.desc}</p>`;
+      card.addEventListener('click', () => openTool(t.id));
+      grid.appendChild(card);
 
       const btn = document.createElement('button');
       btn.className = 'pill';
       btn.textContent = t.title;
-      btn.addEventListener('click', () => openTool(t.id))
-      nav.appendChild(btn)
-    })
+      btn.addEventListener('click', () => openTool(t.id));
+      nav.insertBefore(btn, themeBtn); // antes del toggle de tema
+    });
 
     function openTool(id){
       document.querySelectorAll('section.tool').forEach(s => s.classList.remove('active'))
@@ -311,56 +335,36 @@
       window.scrollTo({top:0,behavior:'smooth'})
     }
 
-    // Abrir por hash si existe
     if(location.hash && document.getElementById(location.hash.slice(1))){
       openTool(location.hash.slice(1))
     } else {
       openTool(tools[0].id)
     }
 
-    // --- Generador de QR ---
+    // ===== Generador de QR =====
     const qrText = document.getElementById('qrText');
     const qrSize = document.getElementById('qrSize');
     const qrMargin = document.getElementById('qrMargin');
-    const qrSizeVal = document.getElementById('qrSizeVal');
-    const qrMarginVal = document.getElementById('qrMarginVal');
     const qrCanvas = document.getElementById('qrCanvas');
     const btnQR = document.getElementById('btnQR');
     const btnQRDownload = document.getElementById('btnQRDownload');
     const btnQRInvert = document.getElementById('btnQRInvert');
-
     let invertQR = false;
 
     function renderQR(){
-      const text = qrText.value.trim() || 'https://tu-dominio.github.io/';
-      const size = parseInt(qrSize.value,10);
-      const margin = parseInt(qrMargin.value,10);
-      const colorDark = invertQR ? '#0d1429' : '#ffffff';
-      const colorLight = invertQR ? '#ffffff' : '#0d1429';
-      const opts = { text, width:size, height:size, margin, color:{dark: colorLight, light: colorDark} };
-      // Usamos la lib QRCode a través de su método toCanvas
-      QRCode.toCanvas(qrCanvas, text, {
-        width:size, margin, color: { dark: colorLight, light: colorDark }
-      }, (err)=>{ if(err) console.error(err) })
-      qrSizeVal.textContent = size + ' px';
-      qrMarginVal.textContent = margin;
+      const text = qrText.value.trim() || 'https://tuusuario.github.io/';
+      const size = parseInt(qrSize.value,10); const margin = parseInt(qrMargin.value,10);
+      const dark = invertQR ? '#0b0f17' : '#000000';
+      const light = invertQR ? '#ffffff' : '#ffffff00'; // transparente para integrar con fondo
+      QRCode.toCanvas(qrCanvas, text, { width:size, margin, color:{ dark, light } }, (err)=>{ if(err) console.error(err) });
     }
-
-    btnQR.addEventListener('click', renderQR);
-    qrSize.addEventListener('input', renderQR);
-    qrMargin.addEventListener('input', renderQR);
+    [btnQR,qrSize,qrMargin].forEach(el=> el.addEventListener('click', renderQR));
+    [qrSize,qrMargin,qrText].forEach(el=> el.addEventListener('input', renderQR));
     btnQRInvert.addEventListener('click', ()=>{ invertQR = !invertQR; renderQR(); })
-
-    btnQRDownload.addEventListener('click', ()=>{
-      const url = qrCanvas.toDataURL('image/png');
-      const a = document.createElement('a');
-      a.href = url; a.download = 'qr.png'; a.click();
-    })
-
-    // Inicial
+    btnQRDownload.addEventListener('click', ()=>{ const a=document.createElement('a'); a.href=qrCanvas.toDataURL('image/png'); a.download='qr.png'; a.click(); })
     renderQR();
 
-    // --- Escáner de QR ---
+    // ===== Escáner de QR =====
     const vid = document.getElementById('vid');
     const qrOut = document.getElementById('qrOut');
     const btnStartCam = document.getElementById('btnStartCam');
@@ -369,192 +373,100 @@
     const btnOpenQR = document.getElementById('btnOpenQR');
     const qrHidden = document.getElementById('qrHidden');
     const ctxHidden = qrHidden.getContext('2d');
-    let stream = null; let rafId = null;
+    let stream = null, rafId = null;
 
     async function startCam(){
       try{
+        if(!('mediaDevices' in navigator) || !('getUserMedia' in navigator.mediaDevices)){
+          alert('Tu navegador no soporta cámara (getUserMedia). Usa Chrome/Firefox actualizado.'); return; }
+        if(location.protocol !== 'https:' && location.hostname !== 'localhost'){
+          alert('Para usar la cámara, abre esta página con HTTPS (GitHub Pages ya usa https).'); return; }
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
         vid.srcObject = stream; await vid.play();
         scanLoop();
-      }catch(e){
-        alert('No se pudo acceder a la cámara. Revisa permisos.');
-        console.error(e);
-      }
+      }catch(e){ alert('No se pudo acceder a la cámara. Revisa permisos del sitio.'); console.error(e); }
     }
+    function stopCam(){ if(rafId) cancelAnimationFrame(rafId); if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; } vid.pause(); vid.srcObject=null; }
+    function scanLoop(){ if(!vid.videoWidth){ rafId=requestAnimationFrame(scanLoop); return; } const w=vid.videoWidth, h=vid.videoHeight; qrHidden.width=w; qrHidden.height=h; ctxHidden.drawImage(vid,0,0,w,h); const img=ctxHidden.getImageData(0,0,w,h); const code=jsQR(img.data,w,h,{ inversionAttempts:'dontInvert' }); if(code && code.data){ setResult(code.data); } rafId=requestAnimationFrame(scanLoop); }
+    function setResult(text){ qrOut.textContent=text; try{ const u=new URL(text); btnOpenQR.href=u.href; }catch{ btnOpenQR.href='javascript:void(0)'; } }
+    btnStartCam.addEventListener('click', startCam); btnStopCam.addEventListener('click', stopCam);
+    btnCopyQR.addEventListener('click', async ()=>{ const t=qrOut.textContent.trim(); if(!t||t==='—') return; try{ await navigator.clipboard.writeText(t); toast('Copiado ✅'); }catch{ alert('No se pudo copiar'); } })
 
-    function stopCam(){
-      if(rafId) cancelAnimationFrame(rafId);
-      if(stream){ stream.getTracks().forEach(t=>t.stop()); stream = null; }
-      vid.pause(); vid.srcObject = null;
-    }
-
-    function scanLoop(){
-      if(!vid.videoWidth){ rafId = requestAnimationFrame(scanLoop); return; }
-      const w = vid.videoWidth, h = vid.videoHeight;
-      qrHidden.width = w; qrHidden.height = h;
-      ctxHidden.drawImage(vid, 0, 0, w, h);
-      const img = ctxHidden.getImageData(0, 0, w, h);
-      const code = jsQR(img.data, w, h, { inversionAttempts: 'dontInvert' });
-      if(code && code.data){ setResult(code.data); }
-      rafId = requestAnimationFrame(scanLoop);
-    }
-
-    function setResult(text){
-      qrOut.textContent = text;
-      btnOpenQR.href = isProbablyURL(text) ? text : 'javascript:void(0)';
-    }
-
-    function isProbablyURL(s){
-      try{ const u = new URL(s); return ['http:','https:'].includes(u.protocol); }catch{ return false }
-    }
-
-    btnStartCam.addEventListener('click', startCam);
-    btnStopCam.addEventListener('click', stopCam);
-    btnCopyQR.addEventListener('click', async ()=>{
-      const t = qrOut.textContent.trim();
-      if(!t || t==='—') return;
-      try{ await navigator.clipboard.writeText(t); toast('Copiado ✅'); }catch{ alert('No se pudo copiar'); }
-    })
-
-    // --- Compresor de imágenes ---
-    const imgInput = document.getElementById('imgInput');
-    const maxW = document.getElementById('maxW');
-    const quality = document.getElementById('quality');
-    const outCanvas = document.getElementById('outCanvas');
-    const btnCompress = document.getElementById('btnCompress');
-    const btnDownload = document.getElementById('btnDownload');
+    // ===== Compresor de imágenes =====
+    const imgInput=document.getElementById('imgInput');
+    const maxW=document.getElementById('maxW');
+    const quality=document.getElementById('quality');
+    const outCanvas=document.getElementById('outCanvas');
+    const btnCompress=document.getElementById('btnCompress');
+    const btnDownload=document.getElementById('btnDownload');
 
     btnCompress.addEventListener('click', async ()=>{
-      const file = imgInput.files?.[0];
-      if(!file) return alert('Sube una imagen primero');
+      const file = imgInput.files?.[0]; if(!file) return alert('Sube una imagen primero');
       const img = await fileToImage(file);
       const scale = Math.min(1, parseInt(maxW.value,10) / img.width);
-      const w = Math.round(img.width * scale); const h = Math.round(img.height * scale);
+      const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
       outCanvas.width = w; outCanvas.height = h;
-      const ctx = outCanvas.getContext('2d');
-      ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, 0, 0, w, h);
+      const ctx = outCanvas.getContext('2d'); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; ctx.drawImage(img, 0, 0, w, h);
       const url = outCanvas.toDataURL('image/jpeg', clamp(parseFloat(quality.value), .1, 1));
-      btnDownload.href = url;
-      toast('Imagen lista ✅');
+      btnDownload.href = url; toast('Imagen lista ✅');
     })
 
-    function fileToImage(file){
-      return new Promise((res,rej)=>{
-        const fr = new FileReader();
-        fr.onerror = rej; fr.onload = ()=>{
-          const img = new Image(); img.onload = ()=>res(img); img.onerror = rej; img.src = fr.result;
-        }; fr.readAsDataURL(file);
-      })
-    }
-
+    function fileToImage(file){ return new Promise((res,rej)=>{ const fr=new FileReader(); fr.onerror=rej; fr.onload=()=>{ const img=new Image(); img.onload=()=>res(img); img.onerror=rej; img.src=fr.result; }; fr.readAsDataURL(file); }) }
     function clamp(v,min,max){ return Math.max(min, Math.min(max, v)) }
 
-    // --- Meme Maker ---
-    const memeImg = document.getElementById('memeImg');
-    const topText = document.getElementById('topText');
-    const bottomText = document.getElementById('bottomText');
-    const fontSize = document.getElementById('fontSize');
-    const stroke = document.getElementById('stroke');
-    const memeCanvas = document.getElementById('memeCanvas');
-    const btnRenderMeme = document.getElementById('btnRenderMeme');
-    const btnDownloadMeme = document.getElementById('btnDownloadMeme');
+    // ===== Meme Maker =====
+    const memeImg=document.getElementById('memeImg');
+    const topText=document.getElementById('topText');
+    const bottomText=document.getElementById('bottomText');
+    const fontSize=document.getElementById('fontSize');
+    const stroke=document.getElementById('stroke');
+    const memeCanvas=document.getElementById('memeCanvas');
+    const btnRenderMeme=document.getElementById('btnRenderMeme');
+    const btnDownloadMeme=document.getElementById('btnDownloadMeme');
+    let memeBase=null;
 
-    let memeBase = null;
-    memeImg.addEventListener('change', async ()=>{
-      const f = memeImg.files?.[0]; if(!f) return;
-      memeBase = await fileToImage(f);
-      drawMeme();
-    })
-
-    function drawMeme(){
-      if(!memeBase){ memeCanvas.width = 640; memeCanvas.height = 480; const c = memeCanvas.getContext('2d'); c.fillStyle = '#0d1429'; c.fillRect(0,0,640,480); return }
-      const maxW = 900; const scale = Math.min(1, maxW / memeBase.width);
-      const w = Math.round(memeBase.width * scale), h = Math.round(memeBase.height * scale);
-      memeCanvas.width = w; memeCanvas.height = h;
-      const ctx = memeCanvas.getContext('2d');
-      ctx.drawImage(memeBase, 0, 0, w, h);
-      const size = parseInt(fontSize.value,10);
-      const pad = Math.max(12, Math.round(size * .6));
-      ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#000'; ctx.lineWidth = parseInt(stroke.value,10);
-      ctx.font = `700 ${size}px Impact, Arial Black, sans-serif`;
-      // Superior
-      drawStrokeText(ctx, (topText.value||'').toUpperCase(), w/2, pad + size);
-      // Inferior
-      drawStrokeText(ctx, (bottomText.value||'').toUpperCase(), w/2, h - pad);
-    }
-
-    function drawStrokeText(ctx, text, x, y){
-      ctx.strokeText(text, x, y); ctx.fillText(text, x, y);
-    }
-
-    btnRenderMeme.addEventListener('click', ()=>{ drawMeme(); btnDownloadMeme.href = memeCanvas.toDataURL('image/png'); toast('Meme listo ✅') })
+    memeImg.addEventListener('change', async ()=>{ const f=memeImg.files?.[0]; if(!f) return; memeBase=await fileToImage(f); drawMeme(); })
+    function drawMeme(){ if(!memeBase){ memeCanvas.width=640; memeCanvas.height=480; const c=memeCanvas.getContext('2d'); c.fillStyle='#0d1429'; c.fillRect(0,0,640,480); return } const maxW=900; const scale=Math.min(1, maxW / memeBase.width); const w=Math.round(memeBase.width*scale), h=Math.round(memeBase.height*scale); memeCanvas.width=w; memeCanvas.height=h; const ctx=memeCanvas.getContext('2d'); ctx.drawImage(memeBase,0,0,w,h); const size=parseInt(fontSize.value,10); const pad=Math.max(12, Math.round(size*.6)); ctx.textAlign='center'; ctx.fillStyle='#fff'; ctx.strokeStyle='#000'; ctx.lineWidth=parseInt(stroke.value,10); ctx.font=`700 ${size}px Impact, Arial Black, sans-serif`; drawStrokeText(ctx, (topText.value||'').toUpperCase(), w/2, pad+size); drawStrokeText(ctx, (bottomText.value||'').toUpperCase(), w/2, h-pad); }
+    function drawStrokeText(ctx, text, x, y){ ctx.strokeText(text, x, y); ctx.fillText(text, x, y); }
+    btnRenderMeme.addEventListener('click', ()=>{ drawMeme(); btnDownloadMeme.href=memeCanvas.toDataURL('image/png'); toast('Meme listo ✅') })
     ;[topText,bottomText,fontSize,stroke].forEach(el=> el.addEventListener('input', drawMeme))
 
-    // --- Markdown preview ---
-    const mdSrc = document.getElementById('mdSrc');
-    const mdOut = document.getElementById('mdOut');
+    // ===== Markdown preview =====
+    const mdSrc=document.getElementById('mdSrc');
+    const mdOut=document.getElementById('mdOut');
     mdSrc.addEventListener('input', ()=>{ mdOut.innerHTML = marked.parse(mdSrc.value || '') })
     mdOut.innerHTML = marked.parse(mdSrc.placeholder)
 
-    // --- Generador de contraseñas ---
-    const len = document.getElementById('len');
-    const lenVal = document.getElementById('lenVal');
-    const useUpper = document.getElementById('useUpper');
-    const useLower = document.getElementById('useLower');
-    const useNums = document.getElementById('useNums');
-    const useSyms = document.getElementById('useSyms');
-    const btnGen = document.getElementById('btnGen');
-    const pwd = document.getElementById('pwd');
-    const btnCopy = document.getElementById('btnCopy');
-    const entropy = document.getElementById('entropy');
+    // ===== Generador de contraseñas =====
+    const len=document.getElementById('len');
+    const lenVal=document.getElementById('lenVal');
+    const useUpper=document.getElementById('useUpper');
+    const useLower=document.getElementById('useLower');
+    const useNums=document.getElementById('useNums');
+    const useSyms=document.getElementById('useSyms');
+    const btnGen=document.getElementById('btnGen');
+    const pwd=document.getElementById('pwd');
+    const btnCopy=document.getElementById('btnCopy');
+    const entropy=document.getElementById('entropy');
 
     function genPwd(){
-      const L = parseInt(len.value,10);
-      const sets = [];
+      const L=parseInt(len.value,10); const sets=[];
       if(useUpper.checked) sets.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
       if(useLower.checked) sets.push('abcdefghijklmnopqrstuvwxyz');
       if(useNums.checked) sets.push('0123456789');
       if(useSyms.checked) sets.push('!@#$%^&*()-_=+[]{};:,<.>/?');
       if(sets.length===0){ alert('Elige al menos 1 tipo'); return }
-      const all = sets.join('');
-      // Aseguramos al menos un char de cada set
-      const out = [];
-      sets.forEach(s => out.push(sample(s)));
-      for(let i=out.length;i<L;i++) out.push(sample(all));
-      // Mezclar
-      for(let i=out.length-1;i>0;i--){ const j = cryptoRand(i+1); [out[i],out[j]] = [out[j],out[i]] }
-      const pass = out.slice(0,L).join('');
-      pwd.textContent = pass;
-      const charset = all.length;
-      const H = Math.round(L * Math.log2(charset));
-      entropy.textContent = `Entropía: ${H} bits`;
+      const all=sets.join(''); const out=[]; sets.forEach(s=> out.push(sample(s))); for(let i=out.length;i<L;i++) out.push(sample(all)); for(let i=out.length-1;i>0;i--){ const j=cryptoRand(i+1); [out[i],out[j]]=[out[j],out[i]] } const pass=out.slice(0,L).join(''); pwd.textContent=pass; const charset=all.length; const H=Math.round(L*Math.log2(charset)); entropy.textContent=`Entropía: ${H} bits`; lenVal.textContent=L;
     }
-
-    function sample(str){
-      return str.charAt(cryptoRand(str.length))
-    }
-
-    function cryptoRand(n){
-      // entero aleatorio [0, n)
-      const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n;
-    }
-
+    function sample(str){ return str.charAt(cryptoRand(str.length)) }
+    function cryptoRand(n){ const a=new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n; }
     len.addEventListener('input', ()=> lenVal.textContent = len.value)
     btnGen.addEventListener('click', genPwd)
-    btnCopy.addEventListener('click', async ()=>{
-      const t = pwd.textContent.trim(); if(!t || t==='—') return;
-      try{ await navigator.clipboard.writeText(t); toast('Copiado ✅') }catch{ alert('No se pudo copiar') }
-    })
-
+    btnCopy.addEventListener('click', async ()=>{ const t=pwd.textContent.trim(); if(!t||t==='—') return; try{ await navigator.clipboard.writeText(t); toast('Copiado ✅') }catch{ alert('No se pudo copiar') } })
     genPwd();
 
-    // --- Toast minimal ---
-    function toast(msg){
-      const el = document.createElement('div');
-      el.textContent = msg; el.style.cssText = 'position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#121a33;border:1px solid rgba(255,255,255,.12);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);z-index:9999';
-      document.body.appendChild(el); setTimeout(()=> el.remove(), 1600)
-    }
+    // ===== Toast minimal =====
+    function toast(msg){ const el=document.createElement('div'); el.textContent=msg; el.style.cssText='position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);z-index:9999'; document.body.appendChild(el); setTimeout(()=> el.remove(), 1600) }
   </script>
 </body>
 </html>
